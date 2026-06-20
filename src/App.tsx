@@ -219,10 +219,10 @@ function App() {
           </div>
 
           <div className="topbar-actions">
-            <button onClick={loadDetails} disabled={loadingSummary}>
+            <button className="btn btn-secondary" onClick={loadDetails} disabled={loadingSummary}>
               {loadingSummary ? "Loading..." : "Refresh"}
             </button>
-            <button onClick={runDiagnostic} disabled={loadingDiagnostic}>
+            <button className="btn btn-primary" onClick={runDiagnostic} disabled={loadingDiagnostic}>
               {loadingDiagnostic ? "Checking..." : "Run diagnostic"}
             </button>
           </div>
@@ -257,17 +257,21 @@ function App() {
               <article className="panel">
                 <h3>Quick actions</h3>
                 <div className="quick-actions">
-                  <button onClick={runDiagnostic} disabled={loadingDiagnostic}>
-                    Full diagnostic
+                  <button className="quick-action" onClick={runDiagnostic} disabled={loadingDiagnostic}>
+                    <span>Full diagnostic</span>
+                    <small>Gateway, DNS and internet checks</small>
                   </button>
-                  <button onClick={() => setActiveSection("ping")}>
-                    Open ping tools
+                  <button className="quick-action" onClick={() => setActiveSection("ping")}>
+                    <span>Ping tools</span>
+                    <small>Check host reachability</small>
                   </button>
-                  <button onClick={() => setActiveSection("ports")}>
-                    Open port test
+                  <button className="quick-action" onClick={() => setActiveSection("ports")}>
+                    <span>Port test</span>
+                    <small>Check TCP service access</small>
                   </button>
-                  <button onClick={() => setActiveSection("report")}>
-                    Open report
+                  <button className="quick-action" onClick={() => setActiveSection("report")}>
+                    <span>Report</span>
+                    <small>Copy diagnostic summary</small>
                   </button>
                 </div>
               </article>
@@ -331,7 +335,7 @@ function App() {
                   Host or IP
                   <input value={pingHost} onChange={(event) => setPingHost(event.target.value)} />
                 </label>
-                <button onClick={runPing}>Ping</button>
+                <button className="btn btn-primary" onClick={runPing}>Ping</button>
               </div>
 
               <pre className="terminal">{pingResult || "No ping result yet."}</pre>
@@ -359,7 +363,7 @@ function App() {
                 </label>
               </div>
 
-              <button onClick={testPort}>Test port</button>
+              <button className="btn btn-primary" onClick={testPort}>Test port</button>
 
               <pre className="terminal">{portResult || "No port test result yet."}</pre>
             </article>
@@ -401,7 +405,7 @@ function App() {
                   <h3>Diagnostic report</h3>
                   <p>Copy the current network summary and diagnostic result.</p>
                 </div>
-                <button onClick={copyReport} disabled={!details && !diagnostic}>
+                <button className="btn btn-secondary" onClick={copyReport} disabled={!details && !diagnostic}>
                   Copy report
                 </button>
               </div>
