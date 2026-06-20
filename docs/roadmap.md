@@ -59,3 +59,8 @@ Advanced mode:
 - Better TV/mobile/printer/router detection.
 - mDNS, NetBIOS, SSDP/UPnP and WSD discovery.
 - Progressive async scan for /16 and /8 networks.
+## V1 polish
+
+- Network Scan report copy button.
+- Optimized traceroute execution.
+- Better non-blocking diagnostics.

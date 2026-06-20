@@ -24,6 +24,7 @@ V1 development.
 - Basic local Network Scan limited to private/local networks.
 - Automatic basic diagnosis.
 - Copy diagnostic report.
+- Copy Network Scan report.
 
 ## Diagnostic logic
 
@@ -90,3 +91,11 @@ Current V1 classification includes:
 - Basic vendor guess from common MAC prefixes.
 - Basic device type inference from hostname, vendor and common ports.
 - Common port checks on discovered local hosts only.
+## Traceroute V1
+
+Traceroute is executed manually and optimized for the app UI:
+
+- Async backend execution.
+- 12 hop limit.
+- 600 ms timeout per hop.
+- DNS lookup disabled for faster route checks.

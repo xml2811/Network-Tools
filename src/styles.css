@@ -304,6 +304,13 @@ input {
   margin-bottom: 16px;
 }
 
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .info-list {
   display: grid;
   gap: 12px;

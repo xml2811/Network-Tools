@@ -24,6 +24,7 @@ V1 en desarrollo.
 - Network Scan local basico limitado a redes privadas/locales.
 - Diagnostico automatico basico.
 - Copiar informe de diagnostico.
+- Copiar informe de Network Scan.
 
 ## Logica de diagnostico
 
@@ -90,3 +91,11 @@ La V1 incluye:
 - Estimacion basica de fabricante por prefijo MAC.
 - Inferencia basica de tipo de dispositivo por hostname, fabricante y puertos comunes.
 - Comprobacion de puertos comunes solo en hosts locales descubiertos.
+## Traceroute V1
+
+Traceroute se ejecuta manualmente y esta optimizado para no bloquear tanto la interfaz:
+
+- Ejecucion async en backend.
+- Limite de 12 saltos.
+- Timeout de 600 ms por salto.
+- Resolucion DNS desactivada para acelerar el trazado.

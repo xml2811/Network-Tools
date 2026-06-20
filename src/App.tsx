@@ -94,6 +94,7 @@ function App() {
   const [lanHosts, setLanHosts] = useState<LanHost[]>([]);
   const [loadingScan, setLoadingScan] = useState(false);
   const [scanResult, setScanResult] = useState("");
+  const [scanCopyStatus, setScanCopyStatus] = useState("");
 
   async function loadDetails() {
     setLoadingSummary(true);
@@ -162,6 +163,7 @@ function App() {
 
   async function runNetworkScan() {
     setLoadingScan(true);
+    setScanCopyStatus("");
     setScanResult("Scanning local network in safe V1 mode. This may take a few seconds...");
 
     try {
@@ -202,6 +204,46 @@ function App() {
     }
   }
 
+
+  function buildNetworkScanReport() {
+    if (!lanHosts.length) {
+      return "No Network Scan has been run yet.";
+    }
+
+    return [
+      "MPTech Network Tools - Network Scan Report",
+      "------------------------------------------",
+      `Generated hosts/entries: ${lanHosts.length}`,
+      "",
+      ...lanHosts.map((host) => {
+        return [
+          `IP: ${host.ip}`,
+          `Role: ${host.network_role || "device"}`,
+          `Hostname: ${host.hostname || "Unknown"}`,
+          `MAC: ${host.mac_address || "Unknown"}`,
+          `Vendor: ${host.vendor_guess || "Unknown"}`,
+          `Type: ${host.device_type || "unknown"}`,
+          `Open ports: ${host.open_ports.length ? host.open_ports.join(", ") : "None"}`,
+          `Source: ${host.source || "unknown"}`,
+          `Latency: ${host.latency_display || `${host.latency_ms} ms`}`
+        ].join("\n");
+      }).join("\n\n")
+    ].join("\n");
+  }
+
+  async function copyNetworkScanReport() {
+    if (!lanHosts.length) {
+      setScanCopyStatus("Run Network Scan first.");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(buildNetworkScanReport());
+      setScanCopyStatus("Network Scan report copied to clipboard.");
+    } catch {
+      setScanCopyStatus("Could not copy automatically. Open the Report tab and select the text manually.");
+    }
+  }
   function buildQuickReport() {
     if (!details) {
       return "No network data loaded yet.";
@@ -226,7 +268,16 @@ function App() {
           `  Gateway: ${adapter.gateways.join(", ")}`,
           `  DNS: ${adapter.dns_servers.join(", ")}`
         ].join("\n");
-      })
+      }),
+      "",
+      ...(lanHosts.length
+        ? [
+            "Network Scan Results:",
+            ...lanHosts.map((host) => {
+              return `- ${host.ip} | role=${host.network_role || "device"} | hostname=${host.hostname || "Unknown"} | vendor=${host.vendor_guess || "Unknown"} | type=${host.device_type || "unknown"} | ports=${host.open_ports.length ? host.open_ports.join(",") : "none"} | source=${host.source || "unknown"} | latency=${host.latency_display || `${host.latency_ms} ms`}`;
+            })
+          ]
+        : ["Network Scan Results: not run"])
     ].join("\n");
   }
 
@@ -251,7 +302,7 @@ function App() {
     }
 
     return "";
-  }, [diagnostic, details]);
+  }, [diagnostic, details, lanHosts]);
 
   const dnsText = details?.dns_servers?.length ? details.dns_servers.join(", ") : "Not loaded";
   const diagnosticOk = diagnostic?.summary.includes("OK");
@@ -509,14 +560,23 @@ function App() {
                     Smart local LAN discovery. It checks active hosts, known ARP entries, broadcast address and common service ports in safe V1 mode.
                   </p>
                 </div>
-                <button className="btn btn-primary" onClick={runNetworkScan} disabled={loadingScan}>
-                  {loadingScan ? "Scanning..." : "Start scan"}
-                </button>
+                <div className="panel-actions">
+                  {lanHosts.length > 0 && (
+                    <button className="btn btn-secondary" onClick={copyNetworkScanReport}>
+                      Copy scan report
+                    </button>
+                  )}
+                  <button className="btn btn-primary" onClick={runNetworkScan} disabled={loadingScan}>
+                    {loadingScan ? "Scanning..." : "Start scan"}
+                  </button>
+                </div>
               </div>
 
               <div className="scan-note">
                 This module is intended only for your own network or networks where you have permission. V1 avoids public ranges and only checks a small set of common ports on discovered local hosts.
               </div>
+
+              {scanCopyStatus && <p className="copy-status">{scanCopyStatus}</p>}
 
               <pre className="terminal">{scanResult || "No network scan has been run yet."}</pre>
 
@@ -579,7 +639,7 @@ function App() {
               </div>
 
               <div className="scan-note">
-                Traceroute is manual because it can take several seconds. V1 uses a safe limit of 20 hops and 1000 ms per hop.
+                Traceroute is manual because it can take several seconds. V1 uses an optimized limit of 12 hops and 600 ms per hop.
               </div>
 
               <pre className="terminal">{traceResult || "No traceroute result yet."}</pre>

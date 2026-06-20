@@ -714,45 +714,55 @@ $results.Values |
 
 
 #[tauri::command]
-fn trace_route(host: String) -> Result<String, String> {
-    let host = host.trim();
+async fn trace_route(host: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let host = host.trim().to_string();
 
-    if host.is_empty() {
-        return Err("Host is empty".to_string());
-    }
+        if host.is_empty() {
+            return Err("Host is empty".to_string());
+        }
 
-    let allowed = host
-        .chars()
-        .all(|character| character.is_ascii_alphanumeric() || character == '.' || character == '-' || character == ':' || character == '_');
+        let allowed = host
+            .chars()
+            .all(|character| {
+                character.is_ascii_alphanumeric()
+                    || character == '.'
+                    || character == '-'
+                    || character == ':'
+                    || character == '_'
+            });
 
-    if !allowed {
-        return Err("Invalid host. Use a domain, IPv4 or IPv6 address.".to_string());
-    }
+        if !allowed {
+            return Err("Invalid host. Use a domain, IPv4 or IPv6 address.".to_string());
+        }
 
-    let output = Command::new("tracert")
-        .args(["-d", "-h", "20", "-w", "1000", host])
-        .output()
-        .map_err(|error| format!("Failed to run tracert: {error}"))?;
+        let output = Command::new("tracert")
+            .args(["-d", "-h", "12", "-w", "600", &host])
+            .output()
+            .map_err(|error| format!("Failed to run tracert: {error}"))?;
 
-    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
-    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+        let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+        let stderr = String::from_utf8_lossy(&output.stderr).to_string();
 
-    let mut lines = Vec::new();
-    lines.push(format!("Traceroute results for {host}"));
-    lines.push("Max hops: 20 | Timeout per hop: 1000 ms | DNS lookup disabled".to_string());
-    lines.push(String::new());
-
-    if !stdout.trim().is_empty() {
-        lines.push(stdout);
-    }
-
-    if !stderr.trim().is_empty() {
+        let mut lines = Vec::new();
+        lines.push(format!("Traceroute results for {host}"));
+        lines.push("Max hops: 12 | Timeout per hop: 600 ms | DNS lookup disabled".to_string());
         lines.push(String::new());
-        lines.push("Errors:".to_string());
-        lines.push(stderr);
-    }
 
-    Ok(lines.join("\n"))
+        if !stdout.trim().is_empty() {
+            lines.push(stdout);
+        }
+
+        if !stderr.trim().is_empty() {
+            lines.push(String::new());
+            lines.push("Errors:".to_string());
+            lines.push(stderr);
+        }
+
+        Ok(lines.join("\n"))
+    })
+    .await
+    .map_err(|error| format!("Traceroute task failed: {error}"))?
 }
 
 #[tauri::command]
