@@ -6,19 +6,36 @@ This project is part of the MPTech Tools collection: small, practical and portab
 
 ## Current status
 
-Early V1 development.
+V1 development.
 
-## Planned V1 features
+## Current features
 
 - Network summary.
+- Active network adapters.
 - Local IP detection.
+- Gateway detection.
+- DNS detection.
+- Public IP check.
 - Ping checks.
 - TCP port testing.
-- Public IP check.
-- Network interfaces view.
-- Local open ports.
-- Basic LAN scan.
-- Copy/export diagnosis.
+- Automatic basic diagnosis.
+- Copy diagnostic report.
+
+## Diagnostic logic
+
+The tool checks:
+
+- Gateway reachability.
+- Primary DNS reachability.
+- Internet IP reachability.
+- Domain resolution.
+
+Then it gives a human-readable diagnosis, for example:
+
+- Local network problem.
+- DNS problem.
+- Internet connectivity problem.
+- Network looks OK.
 
 ## Not included in early V1
 

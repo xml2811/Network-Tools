@@ -3,27 +3,34 @@
 ## V1
 
 - Network summary.
+- Active adapters.
+- Local IP.
+- Gateway.
+- DNS.
+- Public IP.
 - Ping checks.
 - TCP port testing.
-- Local IPs.
-- Basic diagnosis rules.
+- Basic automatic diagnosis.
+- Copy/export diagnostic report.
 
 ## V1.1
 
-- Interfaces table.
-- Gateway and DNS detection.
-- Public IP.
 - Local listening ports.
+- Better interface table.
+- Better Windows encoding handling.
+- Better diagnostic explanations.
 
 ## V1.2
 
 - Basic LAN scan limited to private ranges.
-- Copy/export report.
+- Export report to TXT.
+- Screenshots and release documentation.
 
 ## V2
 
-- Advanced mode:
-  - Change DNS.
-  - DHCP release/renew.
-  - Reset adapter.
-  - Static IP/gateway configuration.
+Advanced mode:
+
+- Change DNS.
+- DHCP release/renew.
+- Reset adapter.
+- Static IP/gateway configuration.

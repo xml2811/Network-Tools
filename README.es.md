@@ -6,19 +6,36 @@ Este proyecto forma parte de MPTech Tools: una coleccion de utilidades pequenas,
 
 ## Estado actual
 
-V1 en desarrollo inicial.
+V1 en desarrollo.
 
-## Funciones previstas para V1
+## Funciones actuales
 
 - Resumen de red.
+- Adaptadores de red activos.
 - Deteccion de IP local.
+- Deteccion de gateway.
+- Deteccion de DNS.
+- Comprobacion de IP publica.
 - Comprobaciones de ping.
 - Test de puertos TCP.
-- Comprobar IP publica.
-- Vista de interfaces de red.
-- Puertos abiertos locales.
-- Escaneo LAN basico.
-- Copiar/exportar diagnostico.
+- Diagnostico automatico basico.
+- Copiar informe de diagnostico.
+
+## Logica de diagnostico
+
+La herramienta comprueba:
+
+- Si responde el gateway.
+- Si responde el DNS principal.
+- Si responde una IP de internet.
+- Si resuelve un dominio.
+
+Despues genera un diagnostico entendible, por ejemplo:
+
+- Problema de red local.
+- Problema de DNS.
+- Problema de conectividad a internet.
+- Red aparentemente correcta.
 
 ## No incluido en la V1 inicial
 

@@ -23,7 +23,7 @@ input {
 
 .app {
   min-height: 100vh;
-  padding: 32px;
+  padding: 28px;
 }
 
 .hero {
@@ -36,6 +36,13 @@ input {
   border-radius: 24px;
   background: rgba(15, 23, 42, 0.78);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
 }
 
 .eyebrow {
@@ -52,21 +59,47 @@ h1 {
   font-size: 42px;
 }
 
-h2 {
+h2,
+h3 {
   margin-top: 0;
 }
 
 .hero p {
-  max-width: 720px;
+  max-width: 760px;
   color: #b7c4d8;
   line-height: 1.6;
+}
+
+.status-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.status-strip div {
+  padding: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.62);
+}
+
+.status-strip span {
+  display: block;
+  margin-bottom: 8px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.status-strip strong {
+  color: #dbeafe;
+  word-break: break-word;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
-  margin-top: 18px;
 }
 
 .card {
@@ -74,6 +107,17 @@ h2 {
   border: 1px solid rgba(148, 163, 184, 0.18);
   border-radius: 20px;
   background: rgba(15, 23, 42, 0.72);
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
 }
 
 button {
@@ -118,6 +162,12 @@ pre {
   border-radius: 12px;
   color: #bfdbfe;
   background: rgba(2, 6, 23, 0.68);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.report {
+  min-height: 220px;
 }
 
 .muted {
@@ -128,11 +178,84 @@ pre {
   color: #dbeafe;
 }
 
+.badge {
+  display: inline-flex;
+  padding: 9px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.badge.ok {
+  background: rgba(34, 197, 94, 0.14);
+  color: #86efac;
+}
+
+.badge.warn {
+  background: rgba(251, 191, 36, 0.14);
+  color: #fde68a;
+}
+
+.checks {
+  display: grid;
+  gap: 10px;
+}
+
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.42);
+}
+
+.check-row p {
+  margin: 4px 0 0;
+  color: #aebdd3;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  margin-top: 6px;
+  border-radius: 999px;
+}
+
+.ok-dot {
+  background: #22c55e;
+}
+
+.fail-dot {
+  background: #ef4444;
+}
+
+.adapter-list {
+  display: grid;
+  gap: 12px;
+}
+
+.adapter {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(2, 6, 23, 0.42);
+}
+
+.adapter p {
+  margin: 8px 0;
+  color: #cbd5e1;
+}
+
+.copy-status {
+  color: #93c5fd;
+  font-weight: 700;
+}
+
 li {
   margin-bottom: 6px;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .app {
     padding: 16px;
   }
@@ -142,7 +265,12 @@ li {
     flex-direction: column;
   }
 
-  .grid {
+  .hero-actions {
+    justify-content: flex-start;
+  }
+
+  .grid,
+  .status-strip {
     grid-template-columns: 1fr;
   }
 
