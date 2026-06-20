@@ -11,6 +11,7 @@ V1 en desarrollo.
 ## Funciones actuales
 
 - Resumen de red.
+- Carga automatica inicial del resumen al abrir la app.
 - Adaptadores de red activos.
 - Deteccion de IP local.
 - Deteccion de gateway.
@@ -60,3 +61,8 @@ Usa esta herramienta solo en tus propios sistemas o redes donde tengas permiso.
 - TypeScript
 - Rust
 - Integracion con comandos de Windows
+## Proximo modulo planificado
+
+### Network Scan
+
+Modulo de escaneo LAN basico y seguro, limitado a redes privadas/locales y pensado solo para redes propias o donde el usuario tenga permiso.

@@ -15,6 +15,9 @@
 
 ## V1.1
 
+- Network Scan basic LAN scan limited to private/local networks.
+
+
 - Local listening ports.
 - Better interface table.
 - Better Windows encoding handling.

@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Section = "dashboard" | "diagnostic" | "ping" | "ports" | "adapters" | "report";
 
@@ -204,6 +204,10 @@ function App() {
 
   const dnsText = details?.dns_servers?.length ? details.dns_servers.join(", ") : "Not loaded";
   const diagnosticOk = diagnostic?.summary.includes("OK");
+  // Auto initial scan: load basic network summary when the app opens.
+  useEffect(() => {
+    loadDetails();
+  }, []);
 
   return (
     <main className="shell">

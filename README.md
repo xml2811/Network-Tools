@@ -11,6 +11,7 @@ V1 development.
 ## Current features
 
 - Network summary.
+- Automatic initial network summary when the app opens.
 - Active network adapters.
 - Local IP detection.
 - Gateway detection.
@@ -60,3 +61,8 @@ Use this tool only on your own systems or networks where you have permission.
 - TypeScript
 - Rust
 - Windows command integration
+## Planned next module
+
+### Network Scan
+
+A safe basic LAN scan module is planned for V1/V1.1. It should be limited to private/local networks and used only on networks where the user has permission.
