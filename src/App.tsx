@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useMemo, useState } from "react";
 
-type Section = "dashboard" | "diagnostic" | "ping" | "ports" | "scan" | "adapters" | "report";
+type Section = "dashboard" | "diagnostic" | "ping" | "ports" | "scan" | "traceroute" | "adapters" | "report";
 
 type NetworkAdapter = {
   description: string;
@@ -65,6 +65,7 @@ const sections: { id: Section; label: string; description: string }[] = [
   { id: "ping", label: "Ping", description: "Host reachability" },
   { id: "ports", label: "Ports", description: "TCP port test" },
   { id: "scan", label: "Network Scan", description: "Local LAN scan" },
+  { id: "traceroute", label: "Traceroute", description: "Route path check" },
   { id: "adapters", label: "Adapters", description: "Network interfaces" },
   { id: "report", label: "Report", description: "Copy/export info" }
 ];
@@ -85,6 +86,9 @@ function App() {
   const [portResult, setPortResult] = useState("");
 
   const [copyStatus, setCopyStatus] = useState("");
+  const [traceHost, setTraceHost] = useState("google.com");
+  const [traceResult, setTraceResult] = useState("");
+  const [loadingTrace, setLoadingTrace] = useState(false);
   const [localPorts, setLocalPorts] = useState<LocalPort[]>([]);
   const [loadingPorts, setLoadingPorts] = useState(false);
   const [lanHosts, setLanHosts] = useState<LanHost[]>([]);
@@ -129,6 +133,20 @@ function App() {
     }
   }
 
+
+  async function runTraceroute() {
+    setLoadingTrace(true);
+    setTraceResult("Running traceroute...");
+
+    try {
+      const result = await invoke<string>("trace_route", { host: traceHost });
+      setTraceResult(result);
+    } catch (error) {
+      setTraceResult(String(error));
+    } finally {
+      setLoadingTrace(false);
+    }
+  }
   async function runPing() {
     setPingResult("Checking...");
 
@@ -334,6 +352,10 @@ function App() {
                     <span>Network Scan</span>
                     <small>Find active devices on local LAN</small>
                   </button>
+                  <button className="quick-action" onClick={() => setActiveSection("traceroute")}>
+                    <span>Traceroute</span>
+                    <small>Show route path to a host</small>
+                  </button>
                   <button className="quick-action" onClick={() => setActiveSection("report")}>
                     <span>Report</span>
                     <small>Copy diagnostic summary</small>
@@ -534,6 +556,33 @@ function App() {
               ) : (
                 <Empty text="Run a scan to list active devices on your local network." />
               )}
+            </article>
+          </section>
+        )}
+
+        {activeSection === "traceroute" && (
+          <section className="section">
+            <article className="panel">
+              <h3>Traceroute</h3>
+              <p className="panel-subtitle">
+                Trace the route from this PC to a host or IP. Useful for finding routing, ISP or network path problems.
+              </p>
+
+              <div className="form-row">
+                <label>
+                  Host or IP
+                  <input value={traceHost} onChange={(event) => setTraceHost(event.target.value)} />
+                </label>
+                <button className="btn btn-primary" onClick={runTraceroute} disabled={loadingTrace}>
+                  {loadingTrace ? "Tracing..." : "Run traceroute"}
+                </button>
+              </div>
+
+              <div className="scan-note">
+                Traceroute is manual because it can take several seconds. V1 uses a safe limit of 20 hops and 1000 ms per hop.
+              </div>
+
+              <pre className="terminal">{traceResult || "No traceroute result yet."}</pre>
             </article>
           </section>
         )}

@@ -19,6 +19,7 @@ V1 development.
 - Public IP check.
 - Ping checks.
 - TCP port testing.
+- Traceroute route path check.
 - Local listening ports.
 - Basic local Network Scan limited to private/local networks.
 - Automatic basic diagnosis.

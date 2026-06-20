@@ -712,6 +712,49 @@ $results.Values |
     Ok(hosts)
 }
 
+
+#[tauri::command]
+fn trace_route(host: String) -> Result<String, String> {
+    let host = host.trim();
+
+    if host.is_empty() {
+        return Err("Host is empty".to_string());
+    }
+
+    let allowed = host
+        .chars()
+        .all(|character| character.is_ascii_alphanumeric() || character == '.' || character == '-' || character == ':' || character == '_');
+
+    if !allowed {
+        return Err("Invalid host. Use a domain, IPv4 or IPv6 address.".to_string());
+    }
+
+    let output = Command::new("tracert")
+        .args(["-d", "-h", "20", "-w", "1000", host])
+        .output()
+        .map_err(|error| format!("Failed to run tracert: {error}"))?;
+
+    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+
+    let mut lines = Vec::new();
+    lines.push(format!("Traceroute results for {host}"));
+    lines.push("Max hops: 20 | Timeout per hop: 1000 ms | DNS lookup disabled".to_string());
+    lines.push(String::new());
+
+    if !stdout.trim().is_empty() {
+        lines.push(stdout);
+    }
+
+    if !stderr.trim().is_empty() {
+        lines.push(String::new());
+        lines.push("Errors:".to_string());
+        lines.push(stderr);
+    }
+
+    Ok(lines.join("\n"))
+}
+
 #[tauri::command]
 fn run_basic_diagnostics() -> Result<DiagnosticResult, String> {
     let details = get_network_details()?;
@@ -801,7 +844,8 @@ fn main() {
             ping_host,
             test_tcp_port,
             get_local_listening_ports,
-            scan_local_network
+            scan_local_network,
+            trace_route
         ])
         .run(tauri::generate_context!())
         .expect("error while running MPTech Network Tools");

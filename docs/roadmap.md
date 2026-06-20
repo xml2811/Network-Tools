@@ -10,6 +10,7 @@
 - Public IP.
 - Ping checks.
 - TCP port testing.
+- Traceroute route path check.
 - Basic automatic diagnosis.
 - Copy/export diagnostic report.
 

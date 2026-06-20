@@ -19,6 +19,7 @@ V1 en desarrollo.
 - Comprobacion de IP publica.
 - Comprobaciones de ping.
 - Test de puertos TCP.
+- Traceroute para comprobar la ruta hasta un host.
 - Puertos locales en escucha.
 - Network Scan local basico limitado a redes privadas/locales.
 - Diagnostico automatico basico.
