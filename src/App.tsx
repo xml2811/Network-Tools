@@ -211,24 +211,26 @@ function App() {
       return "No Network Scan has been run yet.";
     }
 
+    const hostBlocks = lanHosts.map((host) => {
+      return [
+        `IP: ${host.ip}`,
+        `Role: ${host.network_role || "device"}`,
+        `Hostname: ${host.hostname || "Unknown"}`,
+        `MAC: ${host.mac_address || "Unknown"}`,
+        `Vendor: ${host.vendor_guess || "Unknown"}`,
+        `Type: ${host.device_type || "unknown"}`,
+        `Open ports: ${host.open_ports.length ? host.open_ports.join(", ") : "None"}`,
+        `Source: ${host.source || "unknown"}`,
+        `Latency: ${host.latency_display || `${host.latency_ms} ms`}`
+      ].join("\n");
+    });
+
     return [
       "MPTech Network Tools - Network Scan Report",
       "------------------------------------------",
       `Generated hosts/entries: ${lanHosts.length}`,
       "",
-      ...lanHosts.map((host) => {
-        return [
-          `IP: ${host.ip}`,
-          `Role: ${host.network_role || "device"}`,
-          `Hostname: ${host.hostname || "Unknown"}`,
-          `MAC: ${host.mac_address || "Unknown"}`,
-          `Vendor: ${host.vendor_guess || "Unknown"}`,
-          `Type: ${host.device_type || "unknown"}`,
-          `Open ports: ${host.open_ports.length ? host.open_ports.join(", ") : "None"}`,
-          `Source: ${host.source || "unknown"}`,
-          `Latency: ${host.latency_display || `${host.latency_ms} ms`}`
-        ].join("\n");
-      }).join("\n\n")
+      hostBlocks.join("\n\n")
     ].join("\n");
   }
 
