@@ -1,7 +1,10 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use serde::Serialize;
 use serde_json::Value;
 use std::net::{IpAddr, TcpStream, ToSocketAddrs};
 use std::process::Command;
+#[cfg(target_os = "windows")]
+use std::os::windows::process::CommandExt;
 use std::fs;
 use std::time::{Duration, Instant};
 
@@ -67,13 +70,27 @@ struct LanHost {
     source: String,
 }
 
+
+#[cfg(target_os = "windows")]
+const CREATE_NO_WINDOW: u32 = 0x08000000;
+
+fn command_no_window(program: &str) -> Command {
+    let mut command = Command::new(program);
+
+    #[cfg(target_os = "windows")]
+    {
+        command.creation_flags(CREATE_NO_WINDOW);
+    }
+
+    command
+}
 fn run_powershell(script: &str) -> Result<String, String> {
     let full_script = format!(
         "[Console]::OutputEncoding=[System.Text.Encoding]::UTF8; $OutputEncoding=[System.Text.Encoding]::UTF8; {}",
         script
     );
 
-    let output = Command::new("powershell")
+    let output = command_no_window("powershell")
         .args([
             "-NoProfile",
             "-ExecutionPolicy",
@@ -285,7 +302,7 @@ fn ping_once(label: &str, target: &str) -> PingCheck {
 
     let start = Instant::now();
 
-    let output = Command::new("ping")
+    let output = command_no_window("ping")
         .args(["-n", "1", "-w", "1500", &clean_target])
         .output();
 
@@ -737,7 +754,7 @@ async fn trace_route(host: String) -> Result<String, String> {
             return Err("Invalid host. Use a domain, IPv4 or IPv6 address.".to_string());
         }
 
-        let output = Command::new("tracert")
+        let output = command_no_window("tracert")
             .args(["-d", "-h", "12", "-w", "600", &host])
             .output()
             .map_err(|error| format!("Failed to run tracert: {error}"))?;
@@ -783,7 +800,7 @@ fn export_report_to_txt(file_prefix: String, content: String) -> Result<String, 
         return Err("There is no report content to export.".to_string());
     }
 
-    let timestamp_output = Command::new("powershell")
+    let timestamp_output = command_no_window("powershell")
         .args(["-NoProfile", "-Command", "Get-Date -Format yyyyMMdd-HHmmss"])
         .output()
         .map_err(|error| format!("Could not generate timestamp: {error}"))?;
@@ -816,7 +833,7 @@ if ($result -eq [System.Windows.Forms.DialogResult]::OK) {{
         suggested_filename.replace("'", "")
     );
 
-    let dialog_output = Command::new("powershell")
+    let dialog_output = command_no_window("powershell")
         .args([
             "-NoProfile",
             "-STA",
