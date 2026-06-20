@@ -79,3 +79,13 @@ Network Scan usa una estrategia local segura:
 - Comprobacion de puertos comunes solo en hosts locales encontrados.
 
 El escaneo profundo de redes /16 o /8 queda para un futuro modo avanzado.
+## Clasificacion de Network Scan
+
+La V1 incluye:
+
+- Identificacion de broadcast.
+- Deteccion de gateway.
+- Origen del dato: ARP, ping o calculado.
+- Estimacion basica de fabricante por prefijo MAC.
+- Inferencia basica de tipo de dispositivo por hostname, fabricante y puertos comunes.
+- Comprobacion de puertos comunes solo en hosts locales descubiertos.

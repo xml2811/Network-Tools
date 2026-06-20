@@ -79,3 +79,13 @@ Network Scan uses a safe local discovery strategy:
 - Common service port checks only on discovered local hosts.
 
 Deep scanning of very large /16 or /8 networks is planned for a future advanced mode.
+## Network Scan classification
+
+Current V1 classification includes:
+
+- Broadcast address identification.
+- Gateway role detection.
+- Source detection: ARP, ping or calculated.
+- Basic vendor guess from common MAC prefixes.
+- Basic device type inference from hostname, vendor and common ports.
+- Common port checks on discovered local hosts only.

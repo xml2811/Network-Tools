@@ -52,3 +52,9 @@ Advanced mode:
 - Scan by batches to avoid freezing the app.
 - Optional deep scan only in advanced mode.
 - Clear authorization/safety warning before large scans.
+## Future device classification
+
+- Full local OUI vendor database.
+- Better TV/mobile/printer/router detection.
+- mDNS, NetBIOS, SSDP/UPnP and WSD discovery.
+- Progressive async scan for /16 and /8 networks.

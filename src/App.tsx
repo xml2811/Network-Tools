@@ -49,10 +49,14 @@ type LanHost = {
   ip: string;
   hostname: string;
   mac_address: string;
+  vendor_guess: string;
   device_type: string;
+  network_role: string;
   open_ports: string[];
   status: string;
   latency_ms: number;
+  latency_display: string;
+  source: string;
 };
 
 const sections: { id: Section; label: string; description: string }[] = [
@@ -145,7 +149,7 @@ function App() {
     try {
       const result = await invoke<LanHost[]>("scan_local_network");
       setLanHosts(result);
-      setScanResult(`Scan completed. Hosts found: ${result.length}`);
+      setScanResult(`Scan completed. Entries found: ${result.length}`);
     } catch (error) {
       setScanResult(String(error));
     } finally {
@@ -480,7 +484,7 @@ function App() {
                 <div>
                   <h3>Network Scan</h3>
                   <p>
-                    Smart local LAN discovery. It checks active hosts, known ARP entries and common service ports in safe V1 mode.
+                    Smart local LAN discovery. It checks active hosts, known ARP entries, broadcast address and common service ports in safe V1 mode.
                   </p>
                 </div>
                 <button className="btn btn-primary" onClick={runNetworkScan} disabled={loadingScan}>
@@ -500,10 +504,13 @@ function App() {
                     <thead>
                       <tr>
                         <th>IP</th>
+                        <th>Role</th>
                         <th>Hostname</th>
                         <th>MAC</th>
+                        <th>Vendor</th>
                         <th>Type</th>
                         <th>Open ports</th>
+                        <th>Source</th>
                         <th>Latency</th>
                       </tr>
                     </thead>
@@ -511,11 +518,14 @@ function App() {
                       {lanHosts.map((host) => (
                         <tr key={host.ip}>
                           <td>{host.ip}</td>
+                          <td>{host.network_role || "device"}</td>
                           <td>{host.hostname || "Unknown"}</td>
                           <td>{host.mac_address || "Unknown"}</td>
+                          <td>{host.vendor_guess || "Unknown"}</td>
                           <td>{host.device_type || "unknown"}</td>
                           <td>{host.open_ports.length ? host.open_ports.join(", ") : "None"}</td>
-                          <td>{host.latency_ms} ms</td>
+                          <td>{host.source || "unknown"}</td>
+                          <td>{host.latency_display || `${host.latency_ms} ms`}</td>
                         </tr>
                       ))}
                     </tbody>

@@ -56,10 +56,14 @@ struct LanHost {
     ip: String,
     hostname: String,
     mac_address: String,
+    vendor_guess: String,
     device_type: String,
+    network_role: String,
     open_ports: Vec<String>,
     status: String,
     latency_ms: u128,
+    latency_display: String,
+    source: String,
 }
 
 fn run_powershell(script: &str) -> Result<String, String> {
@@ -467,14 +471,99 @@ fn scan_local_network() -> Result<Vec<LanHost>, String> {
     let script_template = r###"
 $prefix = '__PREFIX__'
 $gateway = '__GATEWAY__'
-$commonPorts = @(22, 80, 443, 445, 3389, 8080)
+$commonPorts = @(22, 80, 443, 445, 3389, 8080, 554, 8008, 8009, 9100, 515, 631)
 $results = @{}
+
+function Get-VendorGuess {
+  param([string]$Mac)
+
+  if ([string]::IsNullOrWhiteSpace($Mac)) {
+    return ''
+  }
+
+  $prefix = $Mac.ToLower().Replace('-', ':')
+  if ($prefix.Length -ge 8) {
+    $prefix = $prefix.Substring(0, 8)
+  }
+
+  switch -Regex ($prefix) {
+    '^f4:c8:8a|^a4:08:01|^d8:bb:c1|^10:ff:e0|^2c:f0:5d' { return 'Realtek / PC hardware' }
+    '^44:3b:14|^a4:97:33|^98:de:d0|^50:c7:bf' { return 'Router / network device' }
+    '^00:1a:79|^b8:27:eb|^dc:a6:32|^e4:5f:01' { return 'Linux / embedded device' }
+    '^f0:18:98|^3c:5a:b4|^a4:c3:61|^28:cf:e9' { return 'Apple' }
+    '^bc:92:6b|^cc:46:d6|^f4:f5:d8|^a0:21:b7|^e8:50:8b' { return 'Samsung' }
+    '^64:cc:2e|^28:6c:07|^50:8f:4c|^ec:fa:5c|^1c:bf:ce' { return 'Xiaomi / Android device' }
+    '^d4:6e:0e|^38:37:8b|^70:4f:57' { return 'LG / TV or media device' }
+    '^00:17:88|^ec:b5:fa|^48:a9:8a' { return 'Philips / smart device' }
+    '^70:ee:50|^b0:c5:54|^44:65:0d' { return 'Netgear / network device' }
+    '^50:c7:bf|^c4:e9:84|^e8:48:b8' { return 'TP-Link / network device' }
+    '^fc:ec:da|^dc:9f:db|^24:a4:3c' { return 'Amazon / media device' }
+    '^00:80:77|^00:1f:29|^b4:2e:99' { return 'Brother / printer' }
+    '^00:1b:a9|^44:1e:a1|^b4:0e:de' { return 'HP / printer or PC' }
+    default { return '' }
+  }
+}
+
+function Get-DeviceType {
+  param(
+    [string]$Ip,
+    [string]$Hostname,
+    [string]$Vendor,
+    [array]$OpenPorts
+  )
+
+  if ($Ip.EndsWith('.255')) {
+    return 'network/broadcast'
+  }
+
+  if ($Ip -eq $gateway) {
+    return 'router/gateway'
+  }
+
+  $h = $Hostname.ToLower()
+  $v = $Vendor.ToLower()
+
+  if ($h -match 'desktop|laptop|pc-|win|windows' -or $OpenPorts -contains '445' -or $OpenPorts -contains '3389') {
+    return 'windows pc'
+  }
+
+  if ($h -match 'iphone|ipad|macbook|imac' -or $v -match 'apple') {
+    return 'apple device'
+  }
+
+  if ($h -match 'android|phone|mobile|xiaomi|redmi|poco|samsung|huawei|oppo|realme' -or $v -match 'xiaomi|samsung|android') {
+    return 'mobile/android'
+  }
+
+  if ($h -match 'tv|chromecast|firetv|webos|bravia|androidtv' -or $v -match 'lg|philips|amazon' -or $OpenPorts -contains '8008' -or $OpenPorts -contains '8009') {
+    return 'tv/media'
+  }
+
+  if ($h -match 'printer|brother|epson|canon|hp' -or $v -match 'brother|printer' -or $OpenPorts -contains '9100' -or $OpenPorts -contains '515' -or $OpenPorts -contains '631') {
+    return 'printer'
+  }
+
+  if ($OpenPorts -contains '554') {
+    return 'camera/rtsp'
+  }
+
+  if ($OpenPorts -contains '22') {
+    return 'linux/server/nas'
+  }
+
+  if ($OpenPorts -contains '80' -or $OpenPorts -contains '443' -or $OpenPorts -contains '8080') {
+    return 'web device'
+  }
+
+  return 'unknown'
+}
 
 function Add-HostResult {
   param(
     [string]$Ip,
     [string]$Mac,
-    [int]$Latency
+    [int]$Latency,
+    [string]$Source
   )
 
   if ([string]::IsNullOrWhiteSpace($Ip)) {
@@ -485,54 +574,74 @@ function Add-HostResult {
     return
   }
 
+  if ($Ip.EndsWith('.0')) {
+    return
+  }
+
   $hostname = ''
-  try {
-    $hostname = ([System.Net.Dns]::GetHostEntry($Ip)).HostName
-  } catch {
-    $hostname = ''
-  }
-
   $openPorts = @()
-  foreach ($port in $commonPorts) {
-    try {
-      $client = New-Object System.Net.Sockets.TcpClient
-      $iar = $client.BeginConnect($Ip, $port, $null, $null)
-      $success = $iar.AsyncWaitHandle.WaitOne(120, $false)
-      if ($success -and $client.Connected) {
-        $openPorts += $port.ToString()
-      }
-      $client.Close()
-    } catch {}
-  }
 
-  $deviceType = 'unknown'
+  $role = 'device'
+  $latencyDisplay = "$Latency ms"
+
+  if ($Ip.EndsWith('.255')) {
+    $role = 'broadcast'
+    $Source = 'calculated'
+    $latencyDisplay = '-'
+  } else {
+    if ($Source -eq 'arp' -and $Latency -eq 0) {
+      $latencyDisplay = 'cached'
+    }
+
+    try {
+      $hostname = ([System.Net.Dns]::GetHostEntry($Ip)).HostName
+    } catch {
+      $hostname = ''
+    }
+
+    foreach ($port in $commonPorts) {
+      try {
+        $client = New-Object System.Net.Sockets.TcpClient
+        $iar = $client.BeginConnect($Ip, $port, $null, $null)
+        $success = $iar.AsyncWaitHandle.WaitOne(120, $false)
+        if ($success -and $client.Connected) {
+          $openPorts += $port.ToString()
+        }
+        $client.Close()
+      } catch {}
+    }
+  }
 
   if ($Ip -eq $gateway) {
-    $deviceType = 'router/gateway'
-  } elseif ($openPorts -contains '445' -or $openPorts -contains '3389') {
-    $deviceType = 'pc/windows'
-  } elseif ($openPorts -contains '80' -or $openPorts -contains '443' -or $openPorts -contains '8080') {
-    $deviceType = 'web device'
-  } elseif ($hostname -match 'iphone|ipad|android|phone|mobile') {
-    $deviceType = 'mobile'
+    $role = 'gateway'
   }
+
+  $vendor = Get-VendorGuess -Mac $Mac
+  $deviceType = Get-DeviceType -Ip $Ip -Hostname $hostname -Vendor $vendor -OpenPorts $openPorts
 
   $results[$Ip] = [PSCustomObject]@{
     Ip = $Ip
     Hostname = $hostname
     MacAddress = $Mac
+    VendorGuess = $vendor
     DeviceType = $deviceType
+    NetworkRole = $role
     OpenPorts = @($openPorts)
     Status = 'online'
     LatencyMs = $Latency
+    LatencyDisplay = $latencyDisplay
+    Source = $Source
   }
 }
+
+$broadcast = "$prefix.255"
+Add-HostResult -Ip $broadcast -Mac 'ff-ff-ff-ff-ff-ff' -Latency 0 -Source 'calculated'
 
 try {
   arp -a | ForEach-Object {
     $line = $_.ToString().Trim()
     if ($line -match "^(\d+\.\d+\.\d+\.\d+)\s+([a-fA-F0-9\-]{17})\s+") {
-      Add-HostResult -Ip $matches[1] -Mac $matches[2] -Latency 0
+      Add-HostResult -Ip $matches[1] -Mac $matches[2] -Latency 0 -Source 'arp'
     }
   }
 } catch {}
@@ -553,7 +662,7 @@ try {
       }
     } catch {}
 
-    Add-HostResult -Ip $ip -Mac $mac -Latency ([int]$sw.ElapsedMilliseconds)
+    Add-HostResult -Ip $ip -Mac $mac -Latency ([int]$sw.ElapsedMilliseconds) -Source 'ping'
   }
 }
 
@@ -589,10 +698,14 @@ $results.Values |
             ip: value_to_string(row.get("Ip")),
             hostname: value_to_string(row.get("Hostname")),
             mac_address: value_to_string(row.get("MacAddress")),
+            vendor_guess: value_to_string(row.get("VendorGuess")),
             device_type: value_to_string(row.get("DeviceType")),
+            network_role: value_to_string(row.get("NetworkRole")),
             open_ports: value_to_vec(row.get("OpenPorts")),
             status: value_to_string(row.get("Status")),
             latency_ms: value_to_string(row.get("LatencyMs")).parse::<u128>().unwrap_or(0),
+            latency_display: value_to_string(row.get("LatencyDisplay")),
+            source: value_to_string(row.get("Source")),
         });
     }
 
