@@ -1,6 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useMemo, useState } from "react";
 
+type Section = "dashboard" | "diagnostic" | "ping" | "ports" | "adapters" | "report";
+
 type NetworkAdapter = {
   description: string;
   mac_address: string;
@@ -34,17 +36,30 @@ type DiagnosticResult = {
   report: string;
 };
 
+const sections: { id: Section; label: string; description: string }[] = [
+  { id: "dashboard", label: "Dashboard", description: "Network overview" },
+  { id: "diagnostic", label: "Diagnostic", description: "Automatic checks" },
+  { id: "ping", label: "Ping", description: "Host reachability" },
+  { id: "ports", label: "Ports", description: "TCP port test" },
+  { id: "adapters", label: "Adapters", description: "Network interfaces" },
+  { id: "report", label: "Report", description: "Copy/export info" }
+];
+
 function App() {
+  const [activeSection, setActiveSection] = useState<Section>("dashboard");
   const [details, setDetails] = useState<NetworkDetails | null>(null);
   const [diagnostic, setDiagnostic] = useState<DiagnosticResult | null>(null);
+
   const [loadingSummary, setLoadingSummary] = useState(false);
   const [loadingDiagnostic, setLoadingDiagnostic] = useState(false);
 
   const [pingHost, setPingHost] = useState("8.8.8.8");
   const [pingResult, setPingResult] = useState("");
+
   const [portHost, setPortHost] = useState("google.com");
   const [port, setPort] = useState("443");
   const [portResult, setPortResult] = useState("");
+
   const [copyStatus, setCopyStatus] = useState("");
 
   async function loadDetails() {
@@ -71,6 +86,7 @@ function App() {
 
       const freshDetails = await invoke<NetworkDetails>("get_network_details");
       setDetails(freshDetails);
+      setActiveSection("diagnostic");
     } catch (error) {
       setDiagnostic({
         summary: "Diagnostic failed",
@@ -78,6 +94,7 @@ function App() {
         checks: [],
         report: String(error)
       });
+      setActiveSection("diagnostic");
     } finally {
       setLoadingDiagnostic(false);
     }
@@ -110,17 +127,6 @@ function App() {
     }
   }
 
-  async function copyReport() {
-    const report = diagnostic?.report || buildQuickReport();
-
-    try {
-      await navigator.clipboard.writeText(report);
-      setCopyStatus("Report copied to clipboard.");
-    } catch {
-      setCopyStatus("Could not copy automatically. Select the report text manually.");
-    }
-  }
-
   function buildQuickReport() {
     if (!details) {
       return "No network data loaded yet.";
@@ -149,6 +155,17 @@ function App() {
     ].join("\n");
   }
 
+  async function copyReport() {
+    const report = diagnostic?.report || buildQuickReport();
+
+    try {
+      await navigator.clipboard.writeText(report);
+      setCopyStatus("Report copied to clipboard.");
+    } catch {
+      setCopyStatus("Could not copy automatically. Select the report text manually.");
+    }
+  }
+
   const reportText = useMemo(() => {
     if (diagnostic?.report) {
       return diagnostic.report;
@@ -161,158 +178,267 @@ function App() {
     return "";
   }, [diagnostic, details]);
 
+  const dnsText = details?.dns_servers?.length ? details.dns_servers.join(", ") : "Not loaded";
+  const diagnosticOk = diagnostic?.summary.includes("OK");
+
   return (
-    <main className="app">
-      <section className="hero">
-        <div>
-          <p className="eyebrow">MPTech Tools</p>
-          <h1>Network Tools</h1>
-          <p>
-            Portable Windows toolkit for network diagnostics, ping checks,
-            TCP port testing and quick troubleshooting.
-          </p>
+    <main className="shell">
+      <aside className="sidebar">
+        <div className="brand">
+          <div className="logo">NT</div>
+          <div>
+            <p>MPTech Tools</p>
+            <h1>Network Tools</h1>
+          </div>
         </div>
 
-        <div className="hero-actions">
-          <button onClick={loadDetails} disabled={loadingSummary}>
-            {loadingSummary ? "Loading..." : "Refresh summary"}
-          </button>
-
-          <button onClick={runDiagnostic} disabled={loadingDiagnostic}>
-            {loadingDiagnostic ? "Checking..." : "Run diagnostic"}
-          </button>
-        </div>
-      </section>
-
-      <section className="status-strip">
-        <div>
-          <span>Primary IP</span>
-          <strong>{details?.primary_ip || "Not loaded"}</strong>
-        </div>
-        <div>
-          <span>Gateway</span>
-          <strong>{details?.gateway || "Not loaded"}</strong>
-        </div>
-        <div>
-          <span>DNS</span>
-          <strong>{details?.dns_servers?.[0] || "Not loaded"}</strong>
-        </div>
-        <div>
-          <span>Public IP</span>
-          <strong>{details?.public_ip || "Not loaded"}</strong>
-        </div>
-      </section>
-
-      <section className="grid">
-        <article className="card">
-          <h2>Network summary</h2>
-
-          {details ? (
-            <div className="result">
-              <p><strong>Hostname:</strong> {details.hostname}</p>
-              <p><strong>OS:</strong> {details.os}</p>
-              <p><strong>Primary IP:</strong> {details.primary_ip || "Not detected"}</p>
-              <p><strong>Gateway:</strong> {details.gateway || "Not detected"}</p>
-              <p><strong>DNS:</strong> {details.dns_servers.length ? details.dns_servers.join(", ") : "Not detected"}</p>
-              <p><strong>Public IP:</strong> {details.public_ip || "Not available"}</p>
-            </div>
-          ) : (
-            <p className="muted">Click refresh or run diagnostic to load network information.</p>
-          )}
-        </article>
-
-        <article className="card">
-          <h2>Automatic diagnostic</h2>
-
-          {diagnostic ? (
-            <div>
-              <div className={diagnostic.summary.includes("OK") ? "badge ok" : "badge warn"}>
-                {diagnostic.summary}
-              </div>
-
-              <div className="checks">
-                {diagnostic.checks.map((check) => (
-                  <div className="check-row" key={`${check.label}-${check.target}`}>
-                    <span className={check.ok ? "dot ok-dot" : "dot fail-dot"} />
-                    <div>
-                      <strong>{check.label}</strong>
-                      <p>{check.message}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <h3>Recommendations</h3>
-              <ul>
-                {diagnostic.recommendations.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <p className="muted">Run diagnostic to check gateway, DNS, internet IP and domain resolution.</p>
-          )}
-        </article>
-
-        <article className="card">
-          <h2>Ping check</h2>
-          <label>
-            Host or IP
-            <input value={pingHost} onChange={(event) => setPingHost(event.target.value)} />
-          </label>
-          <button onClick={runPing}>Ping</button>
-          <pre>{pingResult}</pre>
-        </article>
-
-        <article className="card">
-          <h2>TCP port test</h2>
-          <label>
-            Host or IP
-            <input value={portHost} onChange={(event) => setPortHost(event.target.value)} />
-          </label>
-          <label>
-            Port
-            <input value={port} onChange={(event) => setPort(event.target.value)} />
-          </label>
-          <button onClick={testPort}>Test port</button>
-          <pre>{portResult}</pre>
-        </article>
-
-        <article className="card wide">
-          <h2>Active adapters</h2>
-
-          {details?.adapters?.length ? (
-            <div className="adapter-list">
-              {details.adapters.map((adapter) => (
-                <div className="adapter" key={`${adapter.description}-${adapter.mac_address}`}>
-                  <h3>{adapter.description}</h3>
-                  <p><strong>MAC:</strong> {adapter.mac_address || "Not available"}</p>
-                  <p><strong>IPs:</strong> {adapter.ip_addresses.join(", ") || "Not detected"}</p>
-                  <p><strong>Gateway:</strong> {adapter.gateways.join(", ") || "Not detected"}</p>
-                  <p><strong>DNS:</strong> {adapter.dns_servers.join(", ") || "Not detected"}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="muted">No active adapters loaded yet.</p>
-          )}
-        </article>
-
-        <article className="card wide">
-          <div className="card-header">
-            <h2>Diagnostic report</h2>
-            <button onClick={copyReport} disabled={!details && !diagnostic}>
-              Copy report
+        <nav className="nav">
+          {sections.map((section) => (
+            <button
+              key={section.id}
+              className={activeSection === section.id ? "nav-item active" : "nav-item"}
+              onClick={() => setActiveSection(section.id)}
+            >
+              <strong>{section.label}</strong>
+              <span>{section.description}</span>
             </button>
+          ))}
+        </nav>
+
+        <div className="sidebar-footer">
+          <span>Status</span>
+          <strong>{diagnostic?.summary || "Ready"}</strong>
+        </div>
+      </aside>
+
+      <section className="content">
+        <header className="topbar">
+          <div>
+            <p className="eyebrow">Portable Windows toolkit</p>
+            <h2>{sections.find((section) => section.id === activeSection)?.label}</h2>
           </div>
 
-          {copyStatus && <p className="copy-status">{copyStatus}</p>}
+          <div className="topbar-actions">
+            <button onClick={loadDetails} disabled={loadingSummary}>
+              {loadingSummary ? "Loading..." : "Refresh"}
+            </button>
+            <button onClick={runDiagnostic} disabled={loadingDiagnostic}>
+              {loadingDiagnostic ? "Checking..." : "Run diagnostic"}
+            </button>
+          </div>
+        </header>
 
-          <pre className="report">{reportText || "Run diagnostic to generate a report."}</pre>
-        </article>
+        {activeSection === "dashboard" && (
+          <section className="section">
+            <div className="metric-grid">
+              <Metric title="Primary IP" value={details?.primary_ip || "Not loaded"} />
+              <Metric title="Gateway" value={details?.gateway || "Not loaded"} />
+              <Metric title="DNS" value={details?.dns_servers?.[0] || "Not loaded"} />
+              <Metric title="Public IP" value={details?.public_ip || "Not loaded"} />
+            </div>
+
+            <div className="panel-grid">
+              <article className="panel">
+                <h3>Network summary</h3>
+                {details ? (
+                  <div className="info-list">
+                    <Info label="Hostname" value={details.hostname} />
+                    <Info label="OS" value={details.os} />
+                    <Info label="Primary IP" value={details.primary_ip || "Not detected"} />
+                    <Info label="Gateway" value={details.gateway || "Not detected"} />
+                    <Info label="DNS" value={dnsText} />
+                    <Info label="Public IP" value={details.public_ip || "Not available"} />
+                  </div>
+                ) : (
+                  <Empty text="Click Refresh or Run diagnostic to load the network summary." />
+                )}
+              </article>
+
+              <article className="panel">
+                <h3>Quick actions</h3>
+                <div className="quick-actions">
+                  <button onClick={runDiagnostic} disabled={loadingDiagnostic}>
+                    Full diagnostic
+                  </button>
+                  <button onClick={() => setActiveSection("ping")}>
+                    Open ping tools
+                  </button>
+                  <button onClick={() => setActiveSection("ports")}>
+                    Open port test
+                  </button>
+                  <button onClick={() => setActiveSection("report")}>
+                    Open report
+                  </button>
+                </div>
+              </article>
+            </div>
+          </section>
+        )}
+
+        {activeSection === "diagnostic" && (
+          <section className="section">
+            <article className="panel">
+              <div className="panel-header">
+                <div>
+                  <h3>Automatic diagnostic</h3>
+                  <p>Checks gateway, DNS, internet IP and domain resolution.</p>
+                </div>
+                {diagnostic && (
+                  <div className={diagnosticOk ? "badge ok" : "badge warn"}>
+                    {diagnostic.summary}
+                  </div>
+                )}
+              </div>
+
+              {diagnostic ? (
+                <>
+                  <div className="checks">
+                    {diagnostic.checks.map((check) => (
+                      <div className="check-row" key={`${check.label}-${check.target}`}>
+                        <span className={check.ok ? "dot ok-dot" : "dot fail-dot"} />
+                        <div>
+                          <strong>{check.label}</strong>
+                          <p>{check.message}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <h4>Recommendations</h4>
+                  <ul className="clean-list">
+                    {diagnostic.recommendations.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <Empty text="Run diagnostic to generate automatic checks and recommendations." />
+              )}
+            </article>
+          </section>
+        )}
+
+        {activeSection === "ping" && (
+          <section className="section">
+            <article className="panel">
+              <h3>Ping check</h3>
+              <p className="panel-subtitle">
+                Check if a host or IP responds. Useful for testing gateway, DNS, public IPs or domains.
+              </p>
+
+              <div className="form-row">
+                <label>
+                  Host or IP
+                  <input value={pingHost} onChange={(event) => setPingHost(event.target.value)} />
+                </label>
+                <button onClick={runPing}>Ping</button>
+              </div>
+
+              <pre className="terminal">{pingResult || "No ping result yet."}</pre>
+            </article>
+          </section>
+        )}
+
+        {activeSection === "ports" && (
+          <section className="section">
+            <article className="panel">
+              <h3>TCP port test</h3>
+              <p className="panel-subtitle">
+                Check if a TCP service is reachable. Example: google.com:443, router:80, server:22.
+              </p>
+
+              <div className="form-grid">
+                <label>
+                  Host or IP
+                  <input value={portHost} onChange={(event) => setPortHost(event.target.value)} />
+                </label>
+
+                <label>
+                  Port
+                  <input value={port} onChange={(event) => setPort(event.target.value)} />
+                </label>
+              </div>
+
+              <button onClick={testPort}>Test port</button>
+
+              <pre className="terminal">{portResult || "No port test result yet."}</pre>
+            </article>
+          </section>
+        )}
+
+        {activeSection === "adapters" && (
+          <section className="section">
+            <article className="panel">
+              <h3>Active adapters</h3>
+              <p className="panel-subtitle">
+                Shows active network adapters with IP, gateway, DNS and MAC address.
+              </p>
+
+              {details?.adapters?.length ? (
+                <div className="adapter-list">
+                  {details.adapters.map((adapter) => (
+                    <div className="adapter" key={`${adapter.description}-${adapter.mac_address}`}>
+                      <h4>{adapter.description}</h4>
+                      <Info label="MAC" value={adapter.mac_address || "Not available"} />
+                      <Info label="IPs" value={adapter.ip_addresses.join(", ") || "Not detected"} />
+                      <Info label="Gateway" value={adapter.gateways.join(", ") || "Not detected"} />
+                      <Info label="DNS" value={adapter.dns_servers.join(", ") || "Not detected"} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <Empty text="No active adapters loaded yet. Click Refresh first." />
+              )}
+            </article>
+          </section>
+        )}
+
+        {activeSection === "report" && (
+          <section className="section">
+            <article className="panel">
+              <div className="panel-header">
+                <div>
+                  <h3>Diagnostic report</h3>
+                  <p>Copy the current network summary and diagnostic result.</p>
+                </div>
+                <button onClick={copyReport} disabled={!details && !diagnostic}>
+                  Copy report
+                </button>
+              </div>
+
+              {copyStatus && <p className="copy-status">{copyStatus}</p>}
+
+              <pre className="terminal report">
+                {reportText || "Run diagnostic to generate a report."}
+              </pre>
+            </article>
+          </section>
+        )}
       </section>
     </main>
   );
+}
+
+function Metric({ title, value }: { title: string; value: string }) {
+  return (
+    <article className="metric">
+      <span>{title}</span>
+      <strong>{value}</strong>
+    </article>
+  );
+}
+
+function Info({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="info-row">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function Empty({ text }: { text: string }) {
+  return <div className="empty">{text}</div>;
 }
 
 export default App;
