@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useMemo, useState } from "react";
 
-type Section = "dashboard" | "diagnostic" | "ping" | "ports" | "adapters" | "report";
+type Section = "dashboard" | "diagnostic" | "ping" | "ports" | "scan" | "adapters" | "report";
 
 type NetworkAdapter = {
   description: string;
@@ -45,11 +45,19 @@ type LocalPort = {
   process_name: string;
 };
 
+type LanHost = {
+  ip: string;
+  hostname: string;
+  status: string;
+  latency_ms: number;
+};
+
 const sections: { id: Section; label: string; description: string }[] = [
   { id: "dashboard", label: "Dashboard", description: "Network overview" },
   { id: "diagnostic", label: "Diagnostic", description: "Automatic checks" },
   { id: "ping", label: "Ping", description: "Host reachability" },
   { id: "ports", label: "Ports", description: "TCP port test" },
+  { id: "scan", label: "Network Scan", description: "Local LAN scan" },
   { id: "adapters", label: "Adapters", description: "Network interfaces" },
   { id: "report", label: "Report", description: "Copy/export info" }
 ];
@@ -72,6 +80,9 @@ function App() {
   const [copyStatus, setCopyStatus] = useState("");
   const [localPorts, setLocalPorts] = useState<LocalPort[]>([]);
   const [loadingPorts, setLoadingPorts] = useState(false);
+  const [lanHosts, setLanHosts] = useState<LanHost[]>([]);
+  const [loadingScan, setLoadingScan] = useState(false);
+  const [scanResult, setScanResult] = useState("");
 
   async function loadDetails() {
     setLoadingSummary(true);
@@ -123,6 +134,21 @@ function App() {
   }
 
   
+
+  async function runNetworkScan() {
+    setLoadingScan(true);
+    setScanResult("Scanning local private network. This may take a few seconds...");
+
+    try {
+      const result = await invoke<LanHost[]>("scan_local_network");
+      setLanHosts(result);
+      setScanResult(`Scan completed. Hosts found: ${result.length}`);
+    } catch (error) {
+      setScanResult(String(error));
+    } finally {
+      setLoadingScan(false);
+    }
+  }
   async function loadLocalPorts() {
     setLoadingPorts(true);
 
@@ -297,6 +323,10 @@ function App() {
                     <span>Port test</span>
                     <small>Check TCP service access</small>
                   </button>
+                  <button className="quick-action" onClick={() => setActiveSection("scan")}>
+                    <span>Network Scan</span>
+                    <small>Find active devices on local LAN</small>
+                  </button>
                   <button className="quick-action" onClick={() => setActiveSection("report")}>
                     <span>Report</span>
                     <small>Copy diagnostic summary</small>
@@ -439,6 +469,59 @@ function App() {
           </section>
         )}
 
+
+        {activeSection === "scan" && (
+          <section className="section">
+            <article className="panel">
+              <div className="panel-header">
+                <div>
+                  <h3>Network Scan</h3>
+                  <p>
+                    Safe basic LAN scan limited to the current private /24 network.
+                    It only checks active hosts with ping.
+                  </p>
+                </div>
+                <button className="btn btn-primary" onClick={runNetworkScan} disabled={loadingScan}>
+                  {loadingScan ? "Scanning..." : "Start scan"}
+                </button>
+              </div>
+
+              <div className="scan-note">
+                This module is intended only for your own network or networks where you have permission.
+                It does not scan public internet ranges and does not perform port scanning.
+              </div>
+
+              <pre className="terminal">{scanResult || "No network scan has been run yet."}</pre>
+
+              {lanHosts.length ? (
+                <div className="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>IP</th>
+                        <th>Hostname</th>
+                        <th>Status</th>
+                        <th>Latency</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {lanHosts.map((host) => (
+                        <tr key={host.ip}>
+                          <td>{host.ip}</td>
+                          <td>{host.hostname || "Unknown"}</td>
+                          <td>{host.status}</td>
+                          <td>{host.latency_ms} ms</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <Empty text="Run a scan to list active devices on your local network." />
+              )}
+            </article>
+          </section>
+        )}
         {activeSection === "adapters" && (
           <section className="section">
             <article className="panel">

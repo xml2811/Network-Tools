@@ -51,6 +51,14 @@ struct LocalPort {
     process_name: String,
 }
 
+#[derive(Serialize, Clone)]
+struct LanHost {
+    ip: String,
+    hostname: String,
+    status: String,
+    latency_ms: u128,
+}
+
 fn run_powershell(script: &str) -> Result<String, String> {
     let full_script = format!(
         "[Console]::OutputEncoding=[System.Text.Encoding]::UTF8; $OutputEncoding=[System.Text.Encoding]::UTF8; {}",
@@ -179,6 +187,53 @@ $items | ConvertTo-Json -Depth 6 -Compress
     adapters
 }
 
+
+fn is_private_ipv4(ip: &str) -> bool {
+    ip.starts_with("10.")
+        || ip.starts_with("192.168.")
+        || ip.starts_with("172.16.")
+        || ip.starts_with("172.17.")
+        || ip.starts_with("172.18.")
+        || ip.starts_with("172.19.")
+        || ip.starts_with("172.20.")
+        || ip.starts_with("172.21.")
+        || ip.starts_with("172.22.")
+        || ip.starts_with("172.23.")
+        || ip.starts_with("172.24.")
+        || ip.starts_with("172.25.")
+        || ip.starts_with("172.26.")
+        || ip.starts_with("172.27.")
+        || ip.starts_with("172.28.")
+        || ip.starts_with("172.29.")
+        || ip.starts_with("172.30.")
+        || ip.starts_with("172.31.")
+}
+
+fn ipv4_prefix_24(ip: &str) -> Option<String> {
+    let parts: Vec<&str> = ip.split('.').collect();
+
+    if parts.len() != 4 {
+        return None;
+    }
+
+    Some(format!("{}.{}.{}", parts[0], parts[1], parts[2]))
+}
+
+fn resolve_hostname(ip: &str) -> String {
+    let script = format!(
+        r#"
+try {{
+  $name = ([System.Net.Dns]::GetHostEntry('{}')).HostName
+  if ($name) {{ $name.ToString() }} else {{ '' }}
+}} catch {{
+  ''
+}}
+"#,
+        ip
+    );
+
+    run_powershell(&script).unwrap_or_default()
+}
 #[tauri::command]
 fn get_network_details() -> Result<NetworkDetails, String> {
     let adapters = load_adapters();
@@ -479,6 +534,52 @@ fn run_basic_diagnostics() -> Result<DiagnosticResult, String> {
     })
 }
 
+
+#[tauri::command]
+fn scan_local_network() -> Result<Vec<LanHost>, String> {
+    let details = get_network_details()?;
+    let primary_ip = details.primary_ip.trim().to_string();
+
+    if primary_ip.is_empty() {
+        return Err("Primary IP not detected. Refresh network summary first.".to_string());
+    }
+
+    if !is_private_ipv4(&primary_ip) {
+        return Err("Network scan is limited to private/local IPv4 ranges only.".to_string());
+    }
+
+    let Some(prefix) = ipv4_prefix_24(&primary_ip) else {
+        return Err("Could not calculate /24 network prefix.".to_string());
+    };
+
+    let mut hosts: Vec<LanHost> = Vec::new();
+
+    for last_octet in 1..=254 {
+        let ip = format!("{}.{}", prefix, last_octet);
+        let start = Instant::now();
+
+        let output = Command::new("ping")
+            .args(["-n", "1", "-w", "250", &ip])
+            .output();
+
+        let latency = start.elapsed().as_millis();
+
+        if let Ok(result) = output {
+            if result.status.success() {
+                let hostname = resolve_hostname(&ip);
+
+                hosts.push(LanHost {
+                    ip,
+                    hostname,
+                    status: "online".to_string(),
+                    latency_ms: latency,
+                });
+            }
+        }
+    }
+
+    Ok(hosts)
+}
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -486,7 +587,8 @@ fn main() {
             run_basic_diagnostics,
             ping_host,
             test_tcp_port,
-            get_local_listening_ports
+            get_local_listening_ports,
+            scan_local_network
         ])
         .run(tauri::generate_context!())
         .expect("error while running MPTech Network Tools");

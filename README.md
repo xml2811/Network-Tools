@@ -20,6 +20,7 @@ V1 development.
 - Ping checks.
 - TCP port testing.
 - Local listening ports.
+- Basic local Network Scan limited to private/local networks.
 - Automatic basic diagnosis.
 - Copy diagnostic report.
 

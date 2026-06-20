@@ -15,7 +15,7 @@
 
 ## V1.1
 
-- Network Scan basic LAN scan limited to private/local networks.
+- Network Scan basic LAN scan limited to private/local networks. Added in V1.
 
 
 - Local listening ports.

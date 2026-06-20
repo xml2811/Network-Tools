@@ -20,6 +20,7 @@ V1 en desarrollo.
 - Comprobaciones de ping.
 - Test de puertos TCP.
 - Puertos locales en escucha.
+- Network Scan local basico limitado a redes privadas/locales.
 - Diagnostico automatico basico.
 - Copiar informe de diagnostico.
 

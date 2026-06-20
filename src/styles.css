@@ -500,6 +500,17 @@ input {
   background: rgba(2, 6, 23, 0.26);
 }
 
+.scan-note {
+  margin-bottom: 16px;
+  padding: 13px 14px;
+  border: 1px solid rgba(96, 165, 250, 0.18);
+  border-radius: 14px;
+  color: #b6c7df;
+  background: rgba(37, 99, 235, 0.08);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .table-wrap {
   max-height: 420px;
   overflow: auto;
