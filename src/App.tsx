@@ -48,6 +48,9 @@ type LocalPort = {
 type LanHost = {
   ip: string;
   hostname: string;
+  mac_address: string;
+  device_type: string;
+  open_ports: string[];
   status: string;
   latency_ms: number;
 };
@@ -137,7 +140,7 @@ function App() {
 
   async function runNetworkScan() {
     setLoadingScan(true);
-    setScanResult("Scanning local private network. This may take a few seconds...");
+    setScanResult("Scanning local network in safe V1 mode. This may take a few seconds...");
 
     try {
       const result = await invoke<LanHost[]>("scan_local_network");
@@ -477,8 +480,7 @@ function App() {
                 <div>
                   <h3>Network Scan</h3>
                   <p>
-                    Safe basic LAN scan limited to the current private /24 network.
-                    It only checks active hosts with ping.
+                    Smart local LAN discovery. It checks active hosts, known ARP entries and common service ports in safe V1 mode.
                   </p>
                 </div>
                 <button className="btn btn-primary" onClick={runNetworkScan} disabled={loadingScan}>
@@ -487,8 +489,7 @@ function App() {
               </div>
 
               <div className="scan-note">
-                This module is intended only for your own network or networks where you have permission.
-                It does not scan public internet ranges and does not perform port scanning.
+                This module is intended only for your own network or networks where you have permission. V1 avoids public ranges and only checks a small set of common ports on discovered local hosts.
               </div>
 
               <pre className="terminal">{scanResult || "No network scan has been run yet."}</pre>
@@ -500,7 +501,9 @@ function App() {
                       <tr>
                         <th>IP</th>
                         <th>Hostname</th>
-                        <th>Status</th>
+                        <th>MAC</th>
+                        <th>Type</th>
+                        <th>Open ports</th>
                         <th>Latency</th>
                       </tr>
                     </thead>
@@ -509,7 +512,9 @@ function App() {
                         <tr key={host.ip}>
                           <td>{host.ip}</td>
                           <td>{host.hostname || "Unknown"}</td>
-                          <td>{host.status}</td>
+                          <td>{host.mac_address || "Unknown"}</td>
+                          <td>{host.device_type || "unknown"}</td>
+                          <td>{host.open_ports.length ? host.open_ports.join(", ") : "None"}</td>
                           <td>{host.latency_ms} ms</td>
                         </tr>
                       ))}

@@ -67,3 +67,15 @@ Use this tool only on your own systems or networks where you have permission.
 ### Network Scan
 
 A safe basic LAN scan module is planned for V1/V1.1. It should be limited to private/local networks and used only on networks where the user has permission.
+## Network Scan V1
+
+Network Scan uses a safe local discovery strategy:
+
+- ARP cache discovery.
+- Ping discovery on the current local /24 segment.
+- Hostname lookup when available.
+- MAC address when available.
+- Basic device type inference.
+- Common service port checks only on discovered local hosts.
+
+Deep scanning of very large /16 or /8 networks is planned for a future advanced mode.

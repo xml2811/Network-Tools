@@ -67,3 +67,15 @@ Usa esta herramienta solo en tus propios sistemas o redes donde tengas permiso.
 ### Network Scan
 
 Modulo de escaneo LAN basico y seguro, limitado a redes privadas/locales y pensado solo para redes propias o donde el usuario tenga permiso.
+## Network Scan V1
+
+Network Scan usa una estrategia local segura:
+
+- Descubrimiento por cache ARP.
+- Descubrimiento por ping en el segmento local /24 actual.
+- Busqueda de hostname cuando sea posible.
+- MAC cuando este disponible.
+- Inferencia basica del tipo de dispositivo.
+- Comprobacion de puertos comunes solo en hosts locales encontrados.
+
+El escaneo profundo de redes /16 o /8 queda para un futuro modo avanzado.

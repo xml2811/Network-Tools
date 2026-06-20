@@ -37,3 +37,10 @@ Advanced mode:
 - DHCP release/renew.
 - Reset adapter.
 - Static IP/gateway configuration.
+## V2 Network Scan
+
+- Deep scan mode for larger networks.
+- Custom range selection.
+- Configurable timeout.
+- More complete device fingerprinting.
+- Clear permission/safety warnings.
