@@ -44,3 +44,11 @@ Advanced mode:
 - Configurable timeout.
 - More complete device fingerprinting.
 - Clear permission/safety warnings.
+## Future Network Scan mode
+
+- Progressive async scan.
+- Show devices while the scan is running.
+- Support larger networks such as /16 and /8 with strict limits.
+- Scan by batches to avoid freezing the app.
+- Optional deep scan only in advanced mode.
+- Clear authorization/safety warning before large scans.
