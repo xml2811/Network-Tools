@@ -2,6 +2,7 @@ use serde::Serialize;
 use serde_json::Value;
 use std::net::{IpAddr, TcpStream, ToSocketAddrs};
 use std::process::Command;
+use std::fs;
 use std::time::{Duration, Instant};
 
 #[derive(Serialize, Clone)]
@@ -766,6 +767,82 @@ async fn trace_route(host: String) -> Result<String, String> {
 }
 
 #[tauri::command]
+fn export_report_to_txt(file_prefix: String, content: String) -> Result<String, String> {
+    let clean_prefix: String = file_prefix
+        .chars()
+        .filter(|character| character.is_ascii_alphanumeric() || *character == '-' || *character == '_')
+        .collect();
+
+    let prefix = if clean_prefix.trim().is_empty() {
+        "network-tools-report".to_string()
+    } else {
+        clean_prefix
+    };
+
+    if content.trim().is_empty() {
+        return Err("There is no report content to export.".to_string());
+    }
+
+    let timestamp_output = Command::new("powershell")
+        .args(["-NoProfile", "-Command", "Get-Date -Format yyyyMMdd-HHmmss"])
+        .output()
+        .map_err(|error| format!("Could not generate timestamp: {error}"))?;
+
+    let timestamp = String::from_utf8_lossy(&timestamp_output.stdout)
+        .trim()
+        .to_string();
+
+    let suggested_filename = format!("{prefix}-{timestamp}.txt");
+
+    let dialog_script = format!(
+        r###"
+Add-Type -AssemblyName System.Windows.Forms
+$dialog = New-Object System.Windows.Forms.SaveFileDialog
+$dialog.Title = 'Export MPTech Network Tools report'
+$dialog.Filter = 'Text file (*.txt)|*.txt|All files (*.*)|*.*'
+$dialog.FileName = '{}'
+$dialog.DefaultExt = 'txt'
+$dialog.AddExtension = $true
+$dialog.OverwritePrompt = $true
+
+$result = $dialog.ShowDialog()
+
+if ($result -eq [System.Windows.Forms.DialogResult]::OK) {{
+    $dialog.FileName
+}} else {{
+    ''
+}}
+"###,
+        suggested_filename.replace("'", "")
+    );
+
+    let dialog_output = Command::new("powershell")
+        .args([
+            "-NoProfile",
+            "-STA",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            &dialog_script,
+        ])
+        .output()
+        .map_err(|error| format!("Could not open save dialog: {error}"))?;
+
+    let selected_path = String::from_utf8_lossy(&dialog_output.stdout)
+        .trim()
+        .to_string();
+
+    if selected_path.is_empty() {
+        return Err("Export cancelled by user.".to_string());
+    }
+
+    fs::write(&selected_path, content)
+        .map_err(|error| format!("Could not write TXT report: {error}"))?;
+
+    Ok(selected_path)
+}
+
+#[tauri::command]
 fn run_basic_diagnostics() -> Result<DiagnosticResult, String> {
     let details = get_network_details()?;
 
@@ -855,7 +932,8 @@ fn main() {
             test_tcp_port,
             get_local_listening_ports,
             scan_local_network,
-            trace_route
+            trace_route,
+            export_report_to_txt
         ])
         .run(tauri::generate_context!())
         .expect("error while running MPTech Network Tools");

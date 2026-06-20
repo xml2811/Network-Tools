@@ -86,6 +86,7 @@ function App() {
   const [portResult, setPortResult] = useState("");
 
   const [copyStatus, setCopyStatus] = useState("");
+  const [exportStatus, setExportStatus] = useState("");
   const [traceHost, setTraceHost] = useState("google.com");
   const [traceResult, setTraceResult] = useState("");
   const [loadingTrace, setLoadingTrace] = useState(false);
@@ -281,6 +282,44 @@ function App() {
     ].join("\n");
   }
 
+
+  async function exportTxtReport() {
+    const report = diagnostic?.report || buildQuickReport();
+
+    if (!details && !diagnostic) {
+      setExportStatus("Run a diagnostic or refresh the summary before exporting.");
+      return;
+    }
+
+    try {
+      const path = await invoke<string>("export_report_to_txt", {
+        filePrefix: "mptech-network-tools-report",
+        content: report
+      });
+
+      setExportStatus(`TXT exported: ${path}`);
+    } catch (error) {
+      setExportStatus(String(error));
+    }
+  }
+
+  async function exportNetworkScanTxt() {
+    if (!lanHosts.length) {
+      setScanCopyStatus("Run Network Scan first.");
+      return;
+    }
+
+    try {
+      const path = await invoke<string>("export_report_to_txt", {
+        filePrefix: "mptech-network-scan-report",
+        content: buildNetworkScanReport()
+      });
+
+      setScanCopyStatus(`Network Scan TXT exported: ${path}`);
+    } catch (error) {
+      setScanCopyStatus(String(error));
+    }
+  }
   async function copyReport() {
     const report = diagnostic?.report || buildQuickReport();
 
@@ -562,9 +601,14 @@ function App() {
                 </div>
                 <div className="panel-actions">
                   {lanHosts.length > 0 && (
-                    <button className="btn btn-secondary" onClick={copyNetworkScanReport}>
-                      Copy scan report
-                    </button>
+                    <>
+                      <button className="btn btn-secondary" onClick={copyNetworkScanReport}>
+                        Copy scan report
+                      </button>
+                      <button className="btn btn-secondary" onClick={exportNetworkScanTxt}>
+                        Export scan TXT
+                      </button>
+                    </>
                   )}
                   <button className="btn btn-primary" onClick={runNetworkScan} disabled={loadingScan}>
                     {loadingScan ? "Scanning..." : "Start scan"}
@@ -681,12 +725,18 @@ function App() {
                   <h3>Diagnostic report</h3>
                   <p>Copy the current network summary and diagnostic result.</p>
                 </div>
-                <button className="btn btn-secondary" onClick={copyReport} disabled={!details && !diagnostic}>
-                  Copy report
-                </button>
+                <div className="panel-actions">
+                  <button className="btn btn-secondary" onClick={copyReport} disabled={!details && !diagnostic}>
+                    Copy report
+                  </button>
+                  <button className="btn btn-primary" onClick={exportTxtReport} disabled={!details && !diagnostic}>
+                    Export TXT
+                  </button>
+                </div>
               </div>
 
               {copyStatus && <p className="copy-status">{copyStatus}</p>}
+              {exportStatus && <p className="copy-status">{exportStatus}</p>}
 
               <pre className="terminal report">
                 {reportText || "Run diagnostic to generate a report."}

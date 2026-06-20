@@ -64,3 +64,8 @@ Advanced mode:
 - Network Scan report copy button.
 - Optimized traceroute execution.
 - Better non-blocking diagnostics.
+## V1 report export
+
+- Export TXT reports.
+- Export Network Scan TXT reports.
+- Save location selector instead of automatic Desktop save.

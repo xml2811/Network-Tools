@@ -24,6 +24,7 @@ V1 en desarrollo.
 - Network Scan local basico limitado a redes privadas/locales.
 - Diagnostico automatico basico.
 - Copiar informe de diagnostico.
+- Exportar informes a TXT eligiendo donde guardar.
 - Copiar informe de Network Scan.
 
 ## Logica de diagnostico

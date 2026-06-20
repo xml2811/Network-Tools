@@ -24,6 +24,7 @@ V1 development.
 - Basic local Network Scan limited to private/local networks.
 - Automatic basic diagnosis.
 - Copy diagnostic report.
+- Export reports to TXT with save location selector.
 - Copy Network Scan report.
 
 ## Diagnostic logic
