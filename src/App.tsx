@@ -36,6 +36,15 @@ type DiagnosticResult = {
   report: string;
 };
 
+type LocalPort = {
+  protocol: string;
+  local_address: string;
+  local_port: string;
+  state: string;
+  process_id: string;
+  process_name: string;
+};
+
 const sections: { id: Section; label: string; description: string }[] = [
   { id: "dashboard", label: "Dashboard", description: "Network overview" },
   { id: "diagnostic", label: "Diagnostic", description: "Automatic checks" },
@@ -61,6 +70,8 @@ function App() {
   const [portResult, setPortResult] = useState("");
 
   const [copyStatus, setCopyStatus] = useState("");
+  const [localPorts, setLocalPorts] = useState<LocalPort[]>([]);
+  const [loadingPorts, setLoadingPorts] = useState(false);
 
   async function loadDetails() {
     setLoadingSummary(true);
@@ -111,6 +122,19 @@ function App() {
     }
   }
 
+  
+  async function loadLocalPorts() {
+    setLoadingPorts(true);
+
+    try {
+      const result = await invoke<LocalPort[]>("get_local_listening_ports");
+      setLocalPorts(result);
+    } catch (error) {
+      setPortResult(String(error));
+    } finally {
+      setLoadingPorts(false);
+    }
+  }
   async function testPort() {
     setPortResult("Checking...");
 
@@ -345,28 +369,69 @@ function App() {
 
         {activeSection === "ports" && (
           <section className="section">
-            <article className="panel">
-              <h3>TCP port test</h3>
-              <p className="panel-subtitle">
-                Check if a TCP service is reachable. Example: google.com:443, router:80, server:22.
-              </p>
+            <div className="panel-grid">
+              <article className="panel">
+                <h3>TCP port test</h3>
+                <p className="panel-subtitle">
+                  Check if a TCP service is reachable. Example: google.com:443, router:80, server:22.
+                </p>
 
-              <div className="form-grid">
-                <label>
-                  Host or IP
-                  <input value={portHost} onChange={(event) => setPortHost(event.target.value)} />
-                </label>
+                <div className="form-grid">
+                  <label>
+                    Host or IP
+                    <input value={portHost} onChange={(event) => setPortHost(event.target.value)} />
+                  </label>
 
-                <label>
-                  Port
-                  <input value={port} onChange={(event) => setPort(event.target.value)} />
-                </label>
-              </div>
+                  <label>
+                    Port
+                    <input value={port} onChange={(event) => setPort(event.target.value)} />
+                  </label>
+                </div>
 
-              <button className="btn btn-primary" onClick={testPort}>Test port</button>
+                <button className="btn btn-primary" onClick={testPort}>Test port</button>
 
-              <pre className="terminal">{portResult || "No port test result yet."}</pre>
-            </article>
+                <pre className="terminal">{portResult || "No port test result yet."}</pre>
+              </article>
+
+              <article className="panel">
+                <div className="panel-header">
+                  <div>
+                    <h3>Local listening ports</h3>
+                    <p>Shows TCP ports currently listening on this PC.</p>
+                  </div>
+                  <button className="btn btn-secondary" onClick={loadLocalPorts} disabled={loadingPorts}>
+                    {loadingPorts ? "Loading..." : "Load ports"}
+                  </button>
+                </div>
+
+                {localPorts.length ? (
+                  <div className="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Port</th>
+                          <th>Address</th>
+                          <th>Process</th>
+                          <th>PID</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {localPorts.map((item) => (
+                          <tr key={`${item.local_address}-${item.local_port}-${item.process_id}`}>
+                            <td>{item.local_port}</td>
+                            <td>{item.local_address}</td>
+                            <td>{item.process_name || "Unknown"}</td>
+                            <td>{item.process_id}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <Empty text="Click Load ports to show local listening TCP ports." />
+                )}
+              </article>
+            </div>
           </section>
         )}
 

@@ -18,6 +18,7 @@ V1 en desarrollo.
 - Comprobacion de IP publica.
 - Comprobaciones de ping.
 - Test de puertos TCP.
+- Puertos locales en escucha.
 - Diagnostico automatico basico.
 - Copiar informe de diagnostico.
 

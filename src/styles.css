@@ -1,7 +1,8 @@
 :root {
-  font-family: Inter, Segoe UI, Arial, sans-serif;
+  font-family: "Segoe UI", Inter, Arial, sans-serif;
   color: #e5eefb;
   background: #070b14;
+  font-weight: 400;
 }
 
 * {
@@ -12,72 +13,14 @@ body {
   margin: 0;
   overflow: hidden;
   background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.22), transparent 35%),
-    radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.14), transparent 35%),
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.11), transparent 35%),
     #070b14;
 }
 
 button,
 input {
   font: inherit;
-}
-
-button {
-  font: inherit;
-}
-
-.btn,
-.quick-action {
-  border: 1px solid rgba(96, 165, 250, 0.22);
-  border-radius: 13px;
-  padding: 10px 14px;
-  color: #dbeafe;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  background: rgba(37, 99, 235, 0.16);
-  transition:
-    background 0.16s ease,
-    border-color 0.16s ease,
-    transform 0.16s ease,
-    color 0.16s ease;
-}
-
-.btn:hover,
-.quick-action:hover {
-  transform: translateY(-1px);
-  border-color: rgba(96, 165, 250, 0.48);
-  background: rgba(37, 99, 235, 0.26);
-}
-
-.btn:disabled,
-.quick-action:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.btn-primary {
-  color: #ffffff;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.88), rgba(14, 165, 233, 0.72));
-  border-color: rgba(147, 197, 253, 0.34);
-  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.18);
-}
-
-.btn-secondary {
-  color: #bfdbfe;
-  background: rgba(15, 23, 42, 0.72);
-  border-color: rgba(96, 165, 250, 0.24);
-}
-
-.btn-primary:hover {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.96), rgba(14, 165, 233, 0.82));
-}
-
-.btn-secondary:hover {
-  color: #ffffff;
-  background: rgba(30, 41, 59, 0.88);
 }
 
 .shell {
@@ -92,7 +35,7 @@ button {
   flex-direction: column;
   gap: 22px;
   padding: 22px;
-  border-right: 1px solid rgba(148, 163, 184, 0.16);
+  border-right: 1px solid rgba(148, 163, 184, 0.14);
   background: rgba(2, 6, 23, 0.72);
 }
 
@@ -110,22 +53,25 @@ button {
   border-radius: 16px;
   background: linear-gradient(135deg, #2563eb, #0ea5e9);
   color: white;
-  font-weight: 900;
-  box-shadow: 0 14px 35px rgba(37, 99, 235, 0.25);
+  font-size: 15px;
+  font-weight: 750;
+  box-shadow: 0 14px 35px rgba(37, 99, 235, 0.22);
 }
 
 .brand p {
   margin: 0 0 4px;
   color: #60a5fa;
   font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-weight: 650;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .brand h1 {
   margin: 0;
   font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
 }
 
 .nav {
@@ -141,27 +87,33 @@ button {
   border: 1px solid transparent;
   padding: 14px;
   border-radius: 16px;
-  background: rgba(15, 23, 42, 0.42);
+  background: rgba(15, 23, 42, 0.38);
   color: #dbeafe;
+  cursor: pointer;
+}
+
+.nav-item strong {
+  font-size: 15px;
+  font-weight: 650;
 }
 
 .nav-item span {
   color: #94a3b8;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 450;
 }
 
 .nav-item.active {
-  border-color: rgba(96, 165, 250, 0.48);
-  background: rgba(37, 99, 235, 0.22);
+  border-color: rgba(96, 165, 250, 0.42);
+  background: rgba(37, 99, 235, 0.2);
 }
 
 .sidebar-footer {
   margin-top: auto;
   padding: 14px;
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  border: 1px solid rgba(148, 163, 184, 0.14);
   border-radius: 16px;
-  background: rgba(15, 23, 42, 0.52);
+  background: rgba(15, 23, 42, 0.48);
 }
 
 .sidebar-footer span {
@@ -169,10 +121,12 @@ button {
   margin-bottom: 6px;
   color: #94a3b8;
   font-size: 12px;
+  font-weight: 400;
 }
 
 .sidebar-footer strong {
   color: #dbeafe;
+  font-weight: 600;
 }
 
 .content {
@@ -192,7 +146,7 @@ button {
   align-items: center;
   margin: -22px -22px 20px;
   padding: 20px 22px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
   background: rgba(7, 11, 20, 0.88);
   backdrop-filter: blur(14px);
 }
@@ -201,14 +155,16 @@ button {
   margin: 0 0 6px;
   color: #60a5fa;
   font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-weight: 650;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .topbar h2 {
   margin: 0;
-  font-size: 28px;
+  font-size: 29px;
+  font-weight: 620;
+  letter-spacing: -0.04em;
 }
 
 .topbar-actions {
@@ -217,6 +173,60 @@ button {
   gap: 10px;
   justify-content: flex-end;
   align-items: center;
+}
+
+.btn,
+.quick-action {
+  border: 1px solid rgba(96, 165, 250, 0.22);
+  border-radius: 13px;
+  padding: 10px 14px;
+  color: #dbeafe;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 560;
+  letter-spacing: 0;
+  background: rgba(37, 99, 235, 0.14);
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    transform 0.16s ease,
+    color 0.16s ease;
+}
+
+.btn:hover,
+.quick-action:hover {
+  transform: translateY(-1px);
+  border-color: rgba(96, 165, 250, 0.44);
+  background: rgba(37, 99, 235, 0.22);
+}
+
+.btn:disabled,
+.quick-action:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-primary {
+  color: #f8fbff;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.82), rgba(14, 165, 233, 0.66));
+  border-color: rgba(147, 197, 253, 0.3);
+  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.14);
+}
+
+.btn-secondary {
+  color: #bfdbfe;
+  background: rgba(15, 23, 42, 0.68);
+  border-color: rgba(96, 165, 250, 0.22);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.92), rgba(14, 165, 233, 0.76));
+}
+
+.btn-secondary:hover {
+  color: #ffffff;
+  background: rgba(30, 41, 59, 0.82);
 }
 
 .section {
@@ -233,9 +243,9 @@ button {
 .metric {
   min-height: 90px;
   padding: 16px;
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  border: 1px solid rgba(148, 163, 184, 0.15);
   border-radius: 18px;
-  background: rgba(15, 23, 42, 0.66);
+  background: rgba(15, 23, 42, 0.62);
 }
 
 .metric span {
@@ -243,41 +253,47 @@ button {
   margin-bottom: 10px;
   color: #94a3b8;
   font-size: 13px;
+  font-weight: 400;
 }
 
 .metric strong {
   color: #dbeafe;
   word-break: break-word;
   font-size: 17px;
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 
 .panel-grid {
   display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
+  grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.75fr);
   gap: 18px;
 }
 
 .panel {
   padding: 22px;
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: 20px;
-  background: rgba(15, 23, 42, 0.72);
+  background: rgba(15, 23, 42, 0.68);
 }
 
 .panel h3 {
   margin: 0 0 14px;
   font-size: 22px;
+  font-weight: 620;
+  letter-spacing: -0.03em;
 }
 
 .panel h4 {
   margin: 18px 0 10px;
+  font-weight: 580;
 }
 
 .panel-subtitle,
 .panel-header p {
   color: #94a3b8;
   margin-top: 0;
+  font-weight: 400;
 }
 
 .panel-header {
@@ -299,16 +315,18 @@ button {
   gap: 14px;
   padding: 12px;
   border-radius: 14px;
-  background: rgba(2, 6, 23, 0.36);
+  background: rgba(2, 6, 23, 0.34);
 }
 
 .info-row span {
   color: #94a3b8;
+  font-weight: 400;
 }
 
 .info-row strong {
   color: #dbeafe;
   word-break: break-word;
+  font-weight: 560;
 }
 
 .quick-actions {
@@ -322,19 +340,19 @@ button {
   width: 100%;
   text-align: left;
   padding: 14px;
-  background: rgba(2, 6, 23, 0.38);
+  background: rgba(2, 6, 23, 0.36);
 }
 
 .quick-action span {
   color: #e5eefb;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .quick-action small {
   color: #8fa4c4;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .badge {
@@ -342,7 +360,7 @@ button {
   white-space: nowrap;
   padding: 9px 12px;
   border-radius: 999px;
-  font-weight: 900;
+  font-weight: 620;
 }
 
 .badge.ok {
@@ -366,12 +384,17 @@ button {
   gap: 10px;
   padding: 14px;
   border-radius: 16px;
-  background: rgba(2, 6, 23, 0.42);
+  background: rgba(2, 6, 23, 0.4);
+}
+
+.check-row strong {
+  font-weight: 580;
 }
 
 .check-row p {
   margin: 4px 0 0;
   color: #aebdd3;
+  font-weight: 400;
 }
 
 .dot {
@@ -411,15 +434,17 @@ label {
   display: grid;
   gap: 8px;
   color: #cbd5e1;
+  font-weight: 400;
 }
 
 input {
   width: 100%;
-  border: 1px solid rgba(148, 163, 184, 0.24);
+  border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 12px;
   padding: 10px 12px;
   color: #e5eefb;
-  background: rgba(2, 6, 23, 0.74);
+  background: rgba(2, 6, 23, 0.7);
+  font-weight: 400;
 }
 
 .terminal {
@@ -430,9 +455,12 @@ input {
   overflow: auto;
   border-radius: 14px;
   color: #bfdbfe;
-  background: rgba(2, 6, 23, 0.72);
+  background: rgba(2, 6, 23, 0.7);
   white-space: pre-wrap;
   word-break: break-word;
+  font-family: "Cascadia Mono", Consolas, monospace;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .report {
@@ -447,16 +475,17 @@ input {
 .adapter {
   padding: 16px;
   border-radius: 16px;
-  background: rgba(2, 6, 23, 0.42);
+  background: rgba(2, 6, 23, 0.4);
 }
 
 .adapter h4 {
   margin-top: 0;
+  font-weight: 600;
 }
 
 .copy-status {
   color: #93c5fd;
-  font-weight: 800;
+  font-weight: 560;
 }
 
 .empty {
@@ -468,7 +497,42 @@ input {
   border-radius: 18px;
   color: #94a3b8;
   text-align: center;
-  background: rgba(2, 6, 23, 0.28);
+  background: rgba(2, 6, 23, 0.26);
+}
+
+.table-wrap {
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 16px;
+  background: rgba(2, 6, 23, 0.36);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th,
+td {
+  padding: 11px 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: #93c5fd;
+  font-weight: 560;
+  background: rgba(15, 23, 42, 0.74);
+  position: sticky;
+  top: 0;
+}
+
+td {
+  color: #dbeafe;
+  font-weight: 400;
 }
 
 @media (max-width: 1050px) {

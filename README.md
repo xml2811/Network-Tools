@@ -18,6 +18,7 @@ V1 development.
 - Public IP check.
 - Ping checks.
 - TCP port testing.
+- Local listening ports.
 - Automatic basic diagnosis.
 - Copy diagnostic report.
 
