@@ -175,6 +175,23 @@ input {
   align-items: center;
 }
 
+.language-select {
+  border: 1px solid rgba(96, 165, 250, 0.22);
+  border-radius: 13px;
+  padding: 10px 12px;
+  color: #dbeafe;
+  background: rgba(15, 23, 42, 0.76);
+  font-size: 14px;
+  font-weight: 520;
+  outline: none;
+}
+
+.language-select:hover,
+.language-select:focus {
+  border-color: rgba(96, 165, 250, 0.46);
+  background: rgba(30, 41, 59, 0.88);
+}
+
 .btn,
 .quick-action {
   border: 1px solid rgba(96, 165, 250, 0.22);

@@ -100,3 +100,6 @@ Traceroute is executed manually and optimized for the app UI:
 - 12 hop limit.
 - 600 ms timeout per hop.
 - DNS lookup disabled for faster route checks.
+## Languages
+
+The interface includes English, Spanish and Portuguese.

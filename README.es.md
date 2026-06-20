@@ -100,3 +100,6 @@ Traceroute se ejecuta manualmente y esta optimizado para no bloquear tanto la in
 - Limite de 12 saltos.
 - Timeout de 600 ms por salto.
 - Resolucion DNS desactivada para acelerar el trazado.
+## Idiomas
+
+La interfaz incluye inglés, español y portugués, con textos guardados en UTF-8.

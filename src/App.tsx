@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useMemo, useState } from "react";
 
+type Language = "en" | "es" | "pt";
 type Section = "dashboard" | "diagnostic" | "ping" | "ports" | "scan" | "traceroute" | "adapters" | "report";
 
 type NetworkAdapter = {
@@ -59,18 +60,369 @@ type LanHost = {
   source: string;
 };
 
-const sections: { id: Section; label: string; description: string }[] = [
-  { id: "dashboard", label: "Dashboard", description: "Network overview" },
-  { id: "diagnostic", label: "Diagnostic", description: "Automatic checks" },
-  { id: "ping", label: "Ping", description: "Host reachability" },
-  { id: "ports", label: "Ports", description: "TCP port test" },
-  { id: "scan", label: "Network Scan", description: "Local LAN scan" },
-  { id: "traceroute", label: "Traceroute", description: "Route path check" },
-  { id: "adapters", label: "Adapters", description: "Network interfaces" },
-  { id: "report", label: "Report", description: "Copy/export info" }
-];
+const i18n = {
+  en: {
+    appTitle: "Network Tools",
+    brand: "MPTech Tools",
+    subtitle: "Portable Windows toolkit",
+    refresh: "Refresh",
+    runDiagnostic: "Run diagnostic",
+    ready: "Ready",
+    status: "Status",
+    notLoaded: "Not loaded",
+    unknown: "Unknown",
+    none: "None",
+
+    dashboard: "Dashboard",
+    dashboardDesc: "Network overview",
+    diagnostic: "Diagnostic",
+    diagnosticDesc: "Automatic checks",
+    ping: "Ping",
+    pingDesc: "Host reachability",
+    ports: "Ports",
+    portsDesc: "TCP port test",
+    scan: "Network Scan",
+    scanDesc: "Local LAN scan",
+    traceroute: "Traceroute",
+    tracerouteDesc: "Route path check",
+    adapters: "Adapters",
+    adaptersDesc: "Network interfaces",
+    report: "Report",
+    reportDesc: "Copy/export info",
+
+    primaryIp: "Primary IP",
+    gateway: "Gateway",
+    dns: "DNS",
+    publicIp: "Public IP",
+    networkSummary: "Network summary",
+    hostname: "Hostname",
+    os: "OS",
+    quickActions: "Quick actions",
+    fullDiagnostic: "Full diagnostic",
+    fullDiagnosticDesc: "Gateway, DNS and internet checks",
+    pingTools: "Ping tools",
+    pingToolsDesc: "Check host reachability",
+    portTest: "Port test",
+    portTestDesc: "Check TCP service access",
+    scanActionDesc: "Find active devices on local LAN",
+    tracerouteActionDesc: "Show route path to a host",
+    reportActionDesc: "Copy diagnostic summary",
+    emptyDashboard: "Click Refresh or Run diagnostic to load the network summary.",
+
+    automaticDiagnostic: "Automatic diagnostic",
+    automaticDiagnosticHelp: "Checks gateway, DNS, internet IP and domain resolution.",
+    recommendations: "Recommendations",
+    emptyDiagnostic: "Run diagnostic to generate automatic checks and recommendations.",
+
+    hostOrIp: "Host or IP",
+    pingHelp: "Check if a host or IP responds. Useful for testing gateway, DNS, public IPs or domains.",
+    noPing: "No ping result yet.",
+
+    tcpPortTest: "TCP port test",
+    tcpPortHelp: "Check if a TCP service is reachable. Example: google.com:443, router:80, server:22.",
+    port: "Port",
+    testPort: "Test port",
+    noPortResult: "No port test result yet.",
+    localPorts: "Local listening ports",
+    localPortsHelp: "Shows TCP ports currently listening on this PC.",
+    loadPorts: "Load ports",
+    loading: "Loading...",
+    noLocalPorts: "Click Load ports to show local listening TCP ports.",
+    address: "Address",
+    process: "Process",
+    pid: "PID",
+
+    networkScanTitle: "Network Scan",
+    networkScanHelp: "Smart local LAN discovery. It checks active hosts, known ARP entries, broadcast address and common service ports in safe V1 mode.",
+    startScan: "Start scan",
+    scanning: "Scanning...",
+    scanNote: "This module is intended only for your own network or networks where you have permission. V1 avoids public ranges and only checks a small set of common ports on discovered local hosts.",
+    scanReady: "No network scan has been run yet.",
+    scanRunning: "Scanning local network in safe V1 mode. This may take a few seconds...",
+    scanDone: "Scan completed. Entries found:",
+    noScanRows: "Run a scan to list active devices on your local network.",
+    copyScanReport: "Copy scan report",
+    exportScanTxt: "Export scan TXT",
+    runScanFirst: "Run Network Scan first.",
+    scanReportCopied: "Network Scan report copied to clipboard.",
+    scanTxtExported: "Network Scan TXT exported:",
+    role: "Role",
+    mac: "MAC",
+    vendor: "Vendor",
+    type: "Type",
+    openPorts: "Open ports",
+    source: "Source",
+    latency: "Latency",
+
+    tracerouteHelp: "Trace the route from this PC to a host or IP. Useful for finding routing, ISP or network path problems.",
+    runTraceroute: "Run traceroute",
+    tracing: "Tracing...",
+    traceRunning: "Running traceroute...",
+    traceNote: "Traceroute is manual because it can take several seconds. V1 uses an optimized limit of 12 hops and 600 ms per hop.",
+    noTrace: "No traceroute result yet.",
+
+    activeAdapters: "Active adapters",
+    activeAdaptersHelp: "Shows active network adapters with IP, gateway, DNS and MAC address.",
+    noAdapters: "No active adapters loaded yet. Click Refresh first.",
+    ips: "IPs",
+
+    diagnosticReport: "Diagnostic report",
+    diagnosticReportHelp: "Copy or export the current network summary and diagnostic result.",
+    copyReport: "Copy report",
+    exportTxt: "Export TXT",
+    reportCopied: "Report copied to clipboard.",
+    noReport: "Run diagnostic to generate a report.",
+    noExportData: "Run a diagnostic or refresh the summary before exporting.",
+    txtExported: "TXT exported:",
+    copyFailed: "Could not copy automatically. Select the report text manually."
+  },
+  es: {
+    appTitle: "Herramientas de Red",
+    brand: "MPTech Tools",
+    subtitle: "Kit portable para Windows",
+    refresh: "Actualizar",
+    runDiagnostic: "Ejecutar diagnóstico",
+    ready: "Listo",
+    status: "Estado",
+    notLoaded: "No cargado",
+    unknown: "Desconocido",
+    none: "Ninguno",
+
+    dashboard: "Panel",
+    dashboardDesc: "Resumen de red",
+    diagnostic: "Diagnóstico",
+    diagnosticDesc: "Comprobaciones automáticas",
+    ping: "Ping",
+    pingDesc: "Respuesta del host",
+    ports: "Puertos",
+    portsDesc: "Prueba TCP",
+    scan: "Network Scan",
+    scanDesc: "Escaneo LAN local",
+    traceroute: "Traceroute",
+    tracerouteDesc: "Ruta hasta un host",
+    adapters: "Adaptadores",
+    adaptersDesc: "Interfaces de red",
+    report: "Informe",
+    reportDesc: "Copiar/exportar datos",
+
+    primaryIp: "IP principal",
+    gateway: "Gateway",
+    dns: "DNS",
+    publicIp: "IP pública",
+    networkSummary: "Resumen de red",
+    hostname: "Nombre del equipo",
+    os: "Sistema",
+    quickActions: "Acciones rápidas",
+    fullDiagnostic: "Diagnóstico completo",
+    fullDiagnosticDesc: "Gateway, DNS e internet",
+    pingTools: "Herramientas Ping",
+    pingToolsDesc: "Comprobar respuesta de host",
+    portTest: "Prueba de puerto",
+    portTestDesc: "Comprobar acceso TCP",
+    scanActionDesc: "Encontrar dispositivos en la LAN",
+    tracerouteActionDesc: "Ver ruta hasta un host",
+    reportActionDesc: "Copiar resumen de diagnóstico",
+    emptyDashboard: "Pulsa Actualizar o Ejecutar diagnóstico para cargar el resumen de red.",
+
+    automaticDiagnostic: "Diagnóstico automático",
+    automaticDiagnosticHelp: "Comprueba gateway, DNS, IP de internet y resolución de dominio.",
+    recommendations: "Recomendaciones",
+    emptyDiagnostic: "Ejecuta el diagnóstico para generar comprobaciones y recomendaciones.",
+
+    hostOrIp: "Host o IP",
+    pingHelp: "Comprueba si un host o IP responde. Útil para probar gateway, DNS, IPs públicas o dominios.",
+    noPing: "Todavía no hay resultado de ping.",
+
+    tcpPortTest: "Prueba de puerto TCP",
+    tcpPortHelp: "Comprueba si un servicio TCP es accesible. Ejemplo: google.com:443, router:80, servidor:22.",
+    port: "Puerto",
+    testPort: "Probar puerto",
+    noPortResult: "Todavía no hay resultado de prueba de puerto.",
+    localPorts: "Puertos locales en escucha",
+    localPortsHelp: "Muestra los puertos TCP que están escuchando en este PC.",
+    loadPorts: "Cargar puertos",
+    loading: "Cargando...",
+    noLocalPorts: "Pulsa Cargar puertos para mostrar los puertos TCP locales en escucha.",
+    address: "Dirección",
+    process: "Proceso",
+    pid: "PID",
+
+    networkScanTitle: "Network Scan",
+    networkScanHelp: "Descubrimiento inteligente de LAN local. Comprueba hosts activos, entradas ARP conocidas, dirección broadcast y puertos comunes en modo seguro V1.",
+    startScan: "Iniciar escaneo",
+    scanning: "Escaneando...",
+    scanNote: "Este módulo está pensado solo para tu propia red o redes donde tengas permiso. La V1 evita rangos públicos y solo comprueba un conjunto pequeño de puertos comunes en hosts locales descubiertos.",
+    scanReady: "Todavía no se ha ejecutado ningún escaneo de red.",
+    scanRunning: "Escaneando la red local en modo seguro V1. Puede tardar unos segundos...",
+    scanDone: "Escaneo completado. Entradas encontradas:",
+    noScanRows: "Ejecuta un escaneo para listar dispositivos activos en tu red local.",
+    copyScanReport: "Copiar informe",
+    exportScanTxt: "Exportar TXT",
+    runScanFirst: "Ejecuta Network Scan primero.",
+    scanReportCopied: "Informe de Network Scan copiado al portapapeles.",
+    scanTxtExported: "TXT de Network Scan exportado:",
+    role: "Rol",
+    mac: "MAC",
+    vendor: "Fabricante",
+    type: "Tipo",
+    openPorts: "Puertos abiertos",
+    source: "Origen",
+    latency: "Latencia",
+
+    tracerouteHelp: "Traza la ruta desde este PC hasta un host o IP. Útil para detectar problemas de rutas, ISP o red.",
+    runTraceroute: "Ejecutar traceroute",
+    tracing: "Trazando...",
+    traceRunning: "Ejecutando traceroute...",
+    traceNote: "Traceroute es manual porque puede tardar varios segundos. La V1 usa un límite optimizado de 12 saltos y 600 ms por salto.",
+    noTrace: "Todavía no hay resultado de traceroute.",
+
+    activeAdapters: "Adaptadores activos",
+    activeAdaptersHelp: "Muestra adaptadores activos con IP, gateway, DNS y dirección MAC.",
+    noAdapters: "No hay adaptadores activos cargados. Pulsa Actualizar primero.",
+    ips: "IPs",
+
+    diagnosticReport: "Informe de diagnóstico",
+    diagnosticReportHelp: "Copia o exporta el resumen de red y el resultado del diagnóstico.",
+    copyReport: "Copiar informe",
+    exportTxt: "Exportar TXT",
+    reportCopied: "Informe copiado al portapapeles.",
+    noReport: "Ejecuta el diagnóstico para generar un informe.",
+    noExportData: "Ejecuta un diagnóstico o actualiza el resumen antes de exportar.",
+    txtExported: "TXT exportado:",
+    copyFailed: "No se pudo copiar automáticamente. Selecciona el texto del informe manualmente."
+  },
+  pt: {
+    appTitle: "Ferramentas de Rede",
+    brand: "MPTech Tools",
+    subtitle: "Kit portátil para Windows",
+    refresh: "Atualizar",
+    runDiagnostic: "Executar diagnóstico",
+    ready: "Pronto",
+    status: "Estado",
+    notLoaded: "Não carregado",
+    unknown: "Desconhecido",
+    none: "Nenhum",
+
+    dashboard: "Painel",
+    dashboardDesc: "Resumo da rede",
+    diagnostic: "Diagnóstico",
+    diagnosticDesc: "Verificações automáticas",
+    ping: "Ping",
+    pingDesc: "Resposta do host",
+    ports: "Portas",
+    portsDesc: "Teste TCP",
+    scan: "Network Scan",
+    scanDesc: "Varredura LAN local",
+    traceroute: "Traceroute",
+    tracerouteDesc: "Rota até um host",
+    adapters: "Adaptadores",
+    adaptersDesc: "Interfaces de rede",
+    report: "Relatório",
+    reportDesc: "Copiar/exportar dados",
+
+    primaryIp: "IP principal",
+    gateway: "Gateway",
+    dns: "DNS",
+    publicIp: "IP pública",
+    networkSummary: "Resumo da rede",
+    hostname: "Nome do computador",
+    os: "Sistema",
+    quickActions: "Ações rápidas",
+    fullDiagnostic: "Diagnóstico completo",
+    fullDiagnosticDesc: "Gateway, DNS e internet",
+    pingTools: "Ferramentas de Ping",
+    pingToolsDesc: "Verificar resposta do host",
+    portTest: "Teste de porta",
+    portTestDesc: "Verificar acesso TCP",
+    scanActionDesc: "Encontrar dispositivos na LAN",
+    tracerouteActionDesc: "Mostrar rota até um host",
+    reportActionDesc: "Copiar resumo do diagnóstico",
+    emptyDashboard: "Clique em Atualizar ou Executar diagnóstico para carregar o resumo da rede.",
+
+    automaticDiagnostic: "Diagnóstico automático",
+    automaticDiagnosticHelp: "Verifica gateway, DNS, IP de internet e resolução de domínio.",
+    recommendations: "Recomendações",
+    emptyDiagnostic: "Execute o diagnóstico para gerar verificações e recomendações.",
+
+    hostOrIp: "Host ou IP",
+    pingHelp: "Verifica se um host ou IP responde. Útil para testar gateway, DNS, IPs públicas ou domínios.",
+    noPing: "Ainda não há resultado de ping.",
+
+    tcpPortTest: "Teste de porta TCP",
+    tcpPortHelp: "Verifica se um serviço TCP está acessível. Exemplo: google.com:443, router:80, servidor:22.",
+    port: "Porta",
+    testPort: "Testar porta",
+    noPortResult: "Ainda não há resultado de teste de porta.",
+    localPorts: "Portas locais em escuta",
+    localPortsHelp: "Mostra as portas TCP que estão em escuta neste PC.",
+    loadPorts: "Carregar portas",
+    loading: "Carregando...",
+    noLocalPorts: "Clique em Carregar portas para mostrar as portas TCP locais em escuta.",
+    address: "Endereço",
+    process: "Processo",
+    pid: "PID",
+
+    networkScanTitle: "Network Scan",
+    networkScanHelp: "Descoberta inteligente da LAN local. Verifica hosts ativos, entradas ARP conhecidas, endereço broadcast e portas comuns em modo seguro V1.",
+    startScan: "Iniciar varredura",
+    scanning: "Escaneando...",
+    scanNote: "Este módulo deve ser usado apenas na sua própria rede ou em redes onde você tem permissão. A V1 evita faixas públicas e verifica apenas um pequeno conjunto de portas comuns em hosts locais descobertos.",
+    scanReady: "Ainda não foi executada nenhuma varredura de rede.",
+    scanRunning: "Escaneando a rede local em modo seguro V1. Pode levar alguns segundos...",
+    scanDone: "Varredura concluída. Entradas encontradas:",
+    noScanRows: "Execute uma varredura para listar dispositivos ativos na sua rede local.",
+    copyScanReport: "Copiar relatório",
+    exportScanTxt: "Exportar TXT",
+    runScanFirst: "Execute o Network Scan primeiro.",
+    scanReportCopied: "Relatório do Network Scan copiado para a área de transferência.",
+    scanTxtExported: "TXT do Network Scan exportado:",
+    role: "Função",
+    mac: "MAC",
+    vendor: "Fabricante",
+    type: "Tipo",
+    openPorts: "Portas abertas",
+    source: "Origem",
+    latency: "Latência",
+
+    tracerouteHelp: "Traça a rota deste PC até um host ou IP. Útil para detectar problemas de rota, ISP ou rede.",
+    runTraceroute: "Executar traceroute",
+    tracing: "Traçando...",
+    traceRunning: "Executando traceroute...",
+    traceNote: "Traceroute é manual porque pode levar vários segundos. A V1 usa um limite otimizado de 12 saltos e 600 ms por salto.",
+    noTrace: "Ainda não há resultado de traceroute.",
+
+    activeAdapters: "Adaptadores ativos",
+    activeAdaptersHelp: "Mostra adaptadores ativos com IP, gateway, DNS e endereço MAC.",
+    noAdapters: "Nenhum adaptador ativo carregado. Clique em Atualizar primeiro.",
+    ips: "IPs",
+
+    diagnosticReport: "Relatório de diagnóstico",
+    diagnosticReportHelp: "Copie ou exporte o resumo da rede e o resultado do diagnóstico.",
+    copyReport: "Copiar relatório",
+    exportTxt: "Exportar TXT",
+    reportCopied: "Relatório copiado para a área de transferência.",
+    noReport: "Execute o diagnóstico para gerar um relatório.",
+    noExportData: "Execute um diagnóstico ou atualize o resumo antes de exportar.",
+    txtExported: "TXT exportado:",
+    copyFailed: "Não foi possível copiar automaticamente. Selecione o texto do relatório manualmente."
+  }
+} as const;
 
 function App() {
+  const [language, setLanguage] = useState<Language>("en");
+  const t = i18n[language];
+
+  const sections: { id: Section; label: string; description: string }[] = [
+    { id: "dashboard", label: t.dashboard, description: t.dashboardDesc },
+    { id: "diagnostic", label: t.diagnostic, description: t.diagnosticDesc },
+    { id: "ping", label: t.ping, description: t.pingDesc },
+    { id: "ports", label: t.ports, description: t.portsDesc },
+    { id: "scan", label: t.scan, description: t.scanDesc },
+    { id: "traceroute", label: t.traceroute, description: t.tracerouteDesc },
+    { id: "adapters", label: t.adapters, description: t.adaptersDesc },
+    { id: "report", label: t.report, description: t.reportDesc }
+  ];
+
   const [activeSection, setActiveSection] = useState<Section>("dashboard");
   const [details, setDetails] = useState<NetworkDetails | null>(null);
   const [diagnostic, setDiagnostic] = useState<DiagnosticResult | null>(null);
@@ -87,11 +439,14 @@ function App() {
 
   const [copyStatus, setCopyStatus] = useState("");
   const [exportStatus, setExportStatus] = useState("");
+
   const [traceHost, setTraceHost] = useState("google.com");
   const [traceResult, setTraceResult] = useState("");
   const [loadingTrace, setLoadingTrace] = useState(false);
+
   const [localPorts, setLocalPorts] = useState<LocalPort[]>([]);
   const [loadingPorts, setLoadingPorts] = useState(false);
+
   const [lanHosts, setLanHosts] = useState<LanHost[]>([]);
   const [loadingScan, setLoadingScan] = useState(false);
   const [scanResult, setScanResult] = useState("");
@@ -100,6 +455,7 @@ function App() {
   async function loadDetails() {
     setLoadingSummary(true);
     setCopyStatus("");
+    setExportStatus("");
 
     try {
       const result = await invoke<NetworkDetails>("get_network_details");
@@ -114,6 +470,7 @@ function App() {
   async function runDiagnostic() {
     setLoadingDiagnostic(true);
     setCopyStatus("");
+    setExportStatus("");
 
     try {
       const result = await invoke<DiagnosticResult>("run_basic_diagnostics");
@@ -135,10 +492,9 @@ function App() {
     }
   }
 
-
   async function runTraceroute() {
     setLoadingTrace(true);
-    setTraceResult("Running traceroute...");
+    setTraceResult(t.traceRunning);
 
     try {
       const result = await invoke<string>("trace_route", { host: traceHost });
@@ -149,6 +505,7 @@ function App() {
       setLoadingTrace(false);
     }
   }
+
   async function runPing() {
     setPingResult("Checking...");
 
@@ -160,35 +517,6 @@ function App() {
     }
   }
 
-  
-
-  async function runNetworkScan() {
-    setLoadingScan(true);
-    setScanCopyStatus("");
-    setScanResult("Scanning local network in safe V1 mode. This may take a few seconds...");
-
-    try {
-      const result = await invoke<LanHost[]>("scan_local_network");
-      setLanHosts(result);
-      setScanResult(`Scan completed. Entries found: ${result.length}`);
-    } catch (error) {
-      setScanResult(String(error));
-    } finally {
-      setLoadingScan(false);
-    }
-  }
-  async function loadLocalPorts() {
-    setLoadingPorts(true);
-
-    try {
-      const result = await invoke<LocalPort[]>("get_local_listening_ports");
-      setLocalPorts(result);
-    } catch (error) {
-      setPortResult(String(error));
-    } finally {
-      setLoadingPorts(false);
-    }
-  }
   async function testPort() {
     setPortResult("Checking...");
 
@@ -205,6 +533,34 @@ function App() {
     }
   }
 
+  async function runNetworkScan() {
+    setLoadingScan(true);
+    setScanCopyStatus("");
+    setScanResult(t.scanRunning);
+
+    try {
+      const result = await invoke<LanHost[]>("scan_local_network");
+      setLanHosts(result);
+      setScanResult(`${t.scanDone} ${result.length}`);
+    } catch (error) {
+      setScanResult(String(error));
+    } finally {
+      setLoadingScan(false);
+    }
+  }
+
+  async function loadLocalPorts() {
+    setLoadingPorts(true);
+
+    try {
+      const result = await invoke<LocalPort[]>("get_local_listening_ports");
+      setLocalPorts(result);
+    } catch (error) {
+      setPortResult(String(error));
+    } finally {
+      setLoadingPorts(false);
+    }
+  }
 
   function buildNetworkScanReport() {
     if (!lanHosts.length) {
@@ -214,21 +570,21 @@ function App() {
     const hostBlocks = lanHosts.map((host) => {
       return [
         `IP: ${host.ip}`,
-        `Role: ${host.network_role || "device"}`,
-        `Hostname: ${host.hostname || "Unknown"}`,
-        `MAC: ${host.mac_address || "Unknown"}`,
-        `Vendor: ${host.vendor_guess || "Unknown"}`,
-        `Type: ${host.device_type || "unknown"}`,
-        `Open ports: ${host.open_ports.length ? host.open_ports.join(", ") : "None"}`,
-        `Source: ${host.source || "unknown"}`,
-        `Latency: ${host.latency_display || `${host.latency_ms} ms`}`
+        `${t.role}: ${host.network_role || "device"}`,
+        `${t.hostname}: ${host.hostname || t.unknown}`,
+        `${t.mac}: ${host.mac_address || t.unknown}`,
+        `${t.vendor}: ${host.vendor_guess || t.unknown}`,
+        `${t.type}: ${host.device_type || "unknown"}`,
+        `${t.openPorts}: ${host.open_ports.length ? host.open_ports.join(", ") : t.none}`,
+        `${t.source}: ${host.source || "unknown"}`,
+        `${t.latency}: ${host.latency_display || `${host.latency_ms} ms`}`
       ].join("\n");
     });
 
     return [
       "MPTech Network Tools - Network Scan Report",
       "------------------------------------------",
-      `Generated hosts/entries: ${lanHosts.length}`,
+      `${t.scanDone} ${lanHosts.length}`,
       "",
       hostBlocks.join("\n\n")
     ].join("\n");
@@ -236,17 +592,18 @@ function App() {
 
   async function copyNetworkScanReport() {
     if (!lanHosts.length) {
-      setScanCopyStatus("Run Network Scan first.");
+      setScanCopyStatus(t.runScanFirst);
       return;
     }
 
     try {
       await navigator.clipboard.writeText(buildNetworkScanReport());
-      setScanCopyStatus("Network Scan report copied to clipboard.");
+      setScanCopyStatus(t.scanReportCopied);
     } catch {
-      setScanCopyStatus("Could not copy automatically. Open the Report tab and select the text manually.");
+      setScanCopyStatus(t.copyFailed);
     }
   }
+
   function buildQuickReport() {
     if (!details) {
       return "No network data loaded yet.";
@@ -255,41 +612,33 @@ function App() {
     return [
       "MPTech Network Tools - Quick Report",
       "------------------------------------",
-      `Hostname: ${details.hostname}`,
-      `OS: ${details.os}`,
-      `Primary IP: ${details.primary_ip}`,
-      `Gateway: ${details.gateway}`,
-      `DNS: ${details.dns_servers.join(", ")}`,
-      `Public IP: ${details.public_ip}`,
+      `${t.hostname}: ${details.hostname}`,
+      `${t.os}: ${details.os}`,
+      `${t.primaryIp}: ${details.primary_ip}`,
+      `${t.gateway}: ${details.gateway}`,
+      `${t.dns}: ${details.dns_servers.join(", ")}`,
+      `${t.publicIp}: ${details.public_ip}`,
       "",
-      "Adapters:",
+      `${t.adapters}:`,
       ...details.adapters.map((adapter) => {
         return [
           `- ${adapter.description}`,
-          `  MAC: ${adapter.mac_address}`,
-          `  IPs: ${adapter.ip_addresses.join(", ")}`,
-          `  Gateway: ${adapter.gateways.join(", ")}`,
-          `  DNS: ${adapter.dns_servers.join(", ")}`
+          `  ${t.mac}: ${adapter.mac_address}`,
+          `  ${t.ips}: ${adapter.ip_addresses.join(", ")}`,
+          `  ${t.gateway}: ${adapter.gateways.join(", ")}`,
+          `  ${t.dns}: ${adapter.dns_servers.join(", ")}`
         ].join("\n");
       }),
       "",
-      ...(lanHosts.length
-        ? [
-            "Network Scan Results:",
-            ...lanHosts.map((host) => {
-              return `- ${host.ip} | role=${host.network_role || "device"} | hostname=${host.hostname || "Unknown"} | vendor=${host.vendor_guess || "Unknown"} | type=${host.device_type || "unknown"} | ports=${host.open_ports.length ? host.open_ports.join(",") : "none"} | source=${host.source || "unknown"} | latency=${host.latency_display || `${host.latency_ms} ms`}`;
-            })
-          ]
-        : ["Network Scan Results: not run"])
+      lanHosts.length ? buildNetworkScanReport() : "Network Scan Results: not run"
     ].join("\n");
   }
-
 
   async function exportTxtReport() {
     const report = diagnostic?.report || buildQuickReport();
 
     if (!details && !diagnostic) {
-      setExportStatus("Run a diagnostic or refresh the summary before exporting.");
+      setExportStatus(t.noExportData);
       return;
     }
 
@@ -299,7 +648,7 @@ function App() {
         content: report
       });
 
-      setExportStatus(`TXT exported: ${path}`);
+      setExportStatus(`${t.txtExported} ${path}`);
     } catch (error) {
       setExportStatus(String(error));
     }
@@ -307,7 +656,7 @@ function App() {
 
   async function exportNetworkScanTxt() {
     if (!lanHosts.length) {
-      setScanCopyStatus("Run Network Scan first.");
+      setScanCopyStatus(t.runScanFirst);
       return;
     }
 
@@ -317,21 +666,26 @@ function App() {
         content: buildNetworkScanReport()
       });
 
-      setScanCopyStatus(`Network Scan TXT exported: ${path}`);
+      setScanCopyStatus(`${t.scanTxtExported} ${path}`);
     } catch (error) {
       setScanCopyStatus(String(error));
     }
   }
+
   async function copyReport() {
     const report = diagnostic?.report || buildQuickReport();
 
     try {
       await navigator.clipboard.writeText(report);
-      setCopyStatus("Report copied to clipboard.");
+      setCopyStatus(t.reportCopied);
     } catch {
-      setCopyStatus("Could not copy automatically. Select the report text manually.");
+      setCopyStatus(t.copyFailed);
     }
   }
+
+  useEffect(() => {
+    loadDetails();
+  }, []);
 
   const reportText = useMemo(() => {
     if (diagnostic?.report) {
@@ -343,14 +697,10 @@ function App() {
     }
 
     return "";
-  }, [diagnostic, details, lanHosts]);
+  }, [diagnostic, details, lanHosts, language]);
 
-  const dnsText = details?.dns_servers?.length ? details.dns_servers.join(", ") : "Not loaded";
+  const dnsText = details?.dns_servers?.length ? details.dns_servers.join(", ") : t.notLoaded;
   const diagnosticOk = diagnostic?.summary.includes("OK");
-  // Auto initial scan: load basic network summary when the app opens.
-  useEffect(() => {
-    loadDetails();
-  }, []);
 
   return (
     <main className="shell">
@@ -358,8 +708,8 @@ function App() {
         <div className="brand">
           <div className="logo">NT</div>
           <div>
-            <p>MPTech Tools</p>
-            <h1>Network Tools</h1>
+            <p>{t.brand}</p>
+            <h1>{t.appTitle}</h1>
           </div>
         </div>
 
@@ -377,24 +727,35 @@ function App() {
         </nav>
 
         <div className="sidebar-footer">
-          <span>Status</span>
-          <strong>{diagnostic?.summary || "Ready"}</strong>
+          <span>{t.status}</span>
+          <strong>{diagnostic?.summary || t.ready}</strong>
         </div>
       </aside>
 
       <section className="content">
         <header className="topbar">
           <div>
-            <p className="eyebrow">Portable Windows toolkit</p>
+            <p className="eyebrow">{t.subtitle}</p>
             <h2>{sections.find((section) => section.id === activeSection)?.label}</h2>
           </div>
 
           <div className="topbar-actions">
+            <select
+              className="language-select"
+              value={language}
+              onChange={(event) => setLanguage(event.target.value as Language)}
+              aria-label="Language"
+            >
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="pt">Português</option>
+            </select>
+
             <button className="btn btn-secondary" onClick={loadDetails} disabled={loadingSummary}>
-              {loadingSummary ? "Loading..." : "Refresh"}
+              {loadingSummary ? t.loading : t.refresh}
             </button>
             <button className="btn btn-primary" onClick={runDiagnostic} disabled={loadingDiagnostic}>
-              {loadingDiagnostic ? "Checking..." : "Run diagnostic"}
+              {loadingDiagnostic ? "Checking..." : t.runDiagnostic}
             </button>
           </div>
         </header>
@@ -402,55 +763,55 @@ function App() {
         {activeSection === "dashboard" && (
           <section className="section">
             <div className="metric-grid">
-              <Metric title="Primary IP" value={details?.primary_ip || "Not loaded"} />
-              <Metric title="Gateway" value={details?.gateway || "Not loaded"} />
-              <Metric title="DNS" value={details?.dns_servers?.[0] || "Not loaded"} />
-              <Metric title="Public IP" value={details?.public_ip || "Not loaded"} />
+              <Metric title={t.primaryIp} value={details?.primary_ip || t.notLoaded} />
+              <Metric title={t.gateway} value={details?.gateway || t.notLoaded} />
+              <Metric title={t.dns} value={details?.dns_servers?.[0] || t.notLoaded} />
+              <Metric title={t.publicIp} value={details?.public_ip || t.notLoaded} />
             </div>
 
             <div className="panel-grid">
               <article className="panel">
-                <h3>Network summary</h3>
+                <h3>{t.networkSummary}</h3>
                 {details ? (
                   <div className="info-list">
-                    <Info label="Hostname" value={details.hostname} />
-                    <Info label="OS" value={details.os} />
-                    <Info label="Primary IP" value={details.primary_ip || "Not detected"} />
-                    <Info label="Gateway" value={details.gateway || "Not detected"} />
-                    <Info label="DNS" value={dnsText} />
-                    <Info label="Public IP" value={details.public_ip || "Not available"} />
+                    <Info label={t.hostname} value={details.hostname} />
+                    <Info label={t.os} value={details.os} />
+                    <Info label={t.primaryIp} value={details.primary_ip || "Not detected"} />
+                    <Info label={t.gateway} value={details.gateway || "Not detected"} />
+                    <Info label={t.dns} value={dnsText} />
+                    <Info label={t.publicIp} value={details.public_ip || "Not available"} />
                   </div>
                 ) : (
-                  <Empty text="Click Refresh or Run diagnostic to load the network summary." />
+                  <Empty text={t.emptyDashboard} />
                 )}
               </article>
 
               <article className="panel">
-                <h3>Quick actions</h3>
+                <h3>{t.quickActions}</h3>
                 <div className="quick-actions">
                   <button className="quick-action" onClick={runDiagnostic} disabled={loadingDiagnostic}>
-                    <span>Full diagnostic</span>
-                    <small>Gateway, DNS and internet checks</small>
+                    <span>{t.fullDiagnostic}</span>
+                    <small>{t.fullDiagnosticDesc}</small>
                   </button>
                   <button className="quick-action" onClick={() => setActiveSection("ping")}>
-                    <span>Ping tools</span>
-                    <small>Check host reachability</small>
+                    <span>{t.pingTools}</span>
+                    <small>{t.pingToolsDesc}</small>
                   </button>
                   <button className="quick-action" onClick={() => setActiveSection("ports")}>
-                    <span>Port test</span>
-                    <small>Check TCP service access</small>
+                    <span>{t.portTest}</span>
+                    <small>{t.portTestDesc}</small>
                   </button>
                   <button className="quick-action" onClick={() => setActiveSection("scan")}>
-                    <span>Network Scan</span>
-                    <small>Find active devices on local LAN</small>
+                    <span>{t.scan}</span>
+                    <small>{t.scanActionDesc}</small>
                   </button>
                   <button className="quick-action" onClick={() => setActiveSection("traceroute")}>
-                    <span>Traceroute</span>
-                    <small>Show route path to a host</small>
+                    <span>{t.traceroute}</span>
+                    <small>{t.tracerouteActionDesc}</small>
                   </button>
                   <button className="quick-action" onClick={() => setActiveSection("report")}>
-                    <span>Report</span>
-                    <small>Copy diagnostic summary</small>
+                    <span>{t.report}</span>
+                    <small>{t.reportActionDesc}</small>
                   </button>
                 </div>
               </article>
@@ -463,8 +824,8 @@ function App() {
             <article className="panel">
               <div className="panel-header">
                 <div>
-                  <h3>Automatic diagnostic</h3>
-                  <p>Checks gateway, DNS, internet IP and domain resolution.</p>
+                  <h3>{t.automaticDiagnostic}</h3>
+                  <p>{t.automaticDiagnosticHelp}</p>
                 </div>
                 {diagnostic && (
                   <div className={diagnosticOk ? "badge ok" : "badge warn"}>
@@ -487,7 +848,7 @@ function App() {
                     ))}
                   </div>
 
-                  <h4>Recommendations</h4>
+                  <h4>{t.recommendations}</h4>
                   <ul className="clean-list">
                     {diagnostic.recommendations.map((item) => (
                       <li key={item}>{item}</li>
@@ -495,7 +856,7 @@ function App() {
                   </ul>
                 </>
               ) : (
-                <Empty text="Run diagnostic to generate automatic checks and recommendations." />
+                <Empty text={t.emptyDiagnostic} />
               )}
             </article>
           </section>
@@ -504,20 +865,18 @@ function App() {
         {activeSection === "ping" && (
           <section className="section">
             <article className="panel">
-              <h3>Ping check</h3>
-              <p className="panel-subtitle">
-                Check if a host or IP responds. Useful for testing gateway, DNS, public IPs or domains.
-              </p>
+              <h3>{t.ping}</h3>
+              <p className="panel-subtitle">{t.pingHelp}</p>
 
               <div className="form-row">
                 <label>
-                  Host or IP
+                  {t.hostOrIp}
                   <input value={pingHost} onChange={(event) => setPingHost(event.target.value)} />
                 </label>
-                <button className="btn btn-primary" onClick={runPing}>Ping</button>
+                <button className="btn btn-primary" onClick={runPing}>{t.ping}</button>
               </div>
 
-              <pre className="terminal">{pingResult || "No ping result yet."}</pre>
+              <pre className="terminal">{pingResult || t.noPing}</pre>
             </article>
           </section>
         )}
@@ -526,36 +885,34 @@ function App() {
           <section className="section">
             <div className="panel-grid">
               <article className="panel">
-                <h3>TCP port test</h3>
-                <p className="panel-subtitle">
-                  Check if a TCP service is reachable. Example: google.com:443, router:80, server:22.
-                </p>
+                <h3>{t.tcpPortTest}</h3>
+                <p className="panel-subtitle">{t.tcpPortHelp}</p>
 
                 <div className="form-grid">
                   <label>
-                    Host or IP
+                    {t.hostOrIp}
                     <input value={portHost} onChange={(event) => setPortHost(event.target.value)} />
                   </label>
 
                   <label>
-                    Port
+                    {t.port}
                     <input value={port} onChange={(event) => setPort(event.target.value)} />
                   </label>
                 </div>
 
-                <button className="btn btn-primary" onClick={testPort}>Test port</button>
+                <button className="btn btn-primary" onClick={testPort}>{t.testPort}</button>
 
-                <pre className="terminal">{portResult || "No port test result yet."}</pre>
+                <pre className="terminal">{portResult || t.noPortResult}</pre>
               </article>
 
               <article className="panel">
                 <div className="panel-header">
                   <div>
-                    <h3>Local listening ports</h3>
-                    <p>Shows TCP ports currently listening on this PC.</p>
+                    <h3>{t.localPorts}</h3>
+                    <p>{t.localPortsHelp}</p>
                   </div>
                   <button className="btn btn-secondary" onClick={loadLocalPorts} disabled={loadingPorts}>
-                    {loadingPorts ? "Loading..." : "Load ports"}
+                    {loadingPorts ? t.loading : t.loadPorts}
                   </button>
                 </div>
 
@@ -564,10 +921,10 @@ function App() {
                     <table>
                       <thead>
                         <tr>
-                          <th>Port</th>
-                          <th>Address</th>
-                          <th>Process</th>
-                          <th>PID</th>
+                          <th>{t.port}</th>
+                          <th>{t.address}</th>
+                          <th>{t.process}</th>
+                          <th>{t.pid}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -575,7 +932,7 @@ function App() {
                           <tr key={`${item.local_address}-${item.local_port}-${item.process_id}`}>
                             <td>{item.local_port}</td>
                             <td>{item.local_address}</td>
-                            <td>{item.process_name || "Unknown"}</td>
+                            <td>{item.process_name || t.unknown}</td>
                             <td>{item.process_id}</td>
                           </tr>
                         ))}
@@ -583,48 +940,43 @@ function App() {
                     </table>
                   </div>
                 ) : (
-                  <Empty text="Click Load ports to show local listening TCP ports." />
+                  <Empty text={t.noLocalPorts} />
                 )}
               </article>
             </div>
           </section>
         )}
 
-
         {activeSection === "scan" && (
           <section className="section">
             <article className="panel">
               <div className="panel-header">
                 <div>
-                  <h3>Network Scan</h3>
-                  <p>
-                    Smart local LAN discovery. It checks active hosts, known ARP entries, broadcast address and common service ports in safe V1 mode.
-                  </p>
+                  <h3>{t.networkScanTitle}</h3>
+                  <p>{t.networkScanHelp}</p>
                 </div>
                 <div className="panel-actions">
                   {lanHosts.length > 0 && (
                     <>
                       <button className="btn btn-secondary" onClick={copyNetworkScanReport}>
-                        Copy scan report
+                        {t.copyScanReport}
                       </button>
                       <button className="btn btn-secondary" onClick={exportNetworkScanTxt}>
-                        Export scan TXT
+                        {t.exportScanTxt}
                       </button>
                     </>
                   )}
                   <button className="btn btn-primary" onClick={runNetworkScan} disabled={loadingScan}>
-                    {loadingScan ? "Scanning..." : "Start scan"}
+                    {loadingScan ? t.scanning : t.startScan}
                   </button>
                 </div>
               </div>
 
-              <div className="scan-note">
-                This module is intended only for your own network or networks where you have permission. V1 avoids public ranges and only checks a small set of common ports on discovered local hosts.
-              </div>
+              <div className="scan-note">{t.scanNote}</div>
 
               {scanCopyStatus && <p className="copy-status">{scanCopyStatus}</p>}
 
-              <pre className="terminal">{scanResult || "No network scan has been run yet."}</pre>
+              <pre className="terminal">{scanResult || t.scanReady}</pre>
 
               {lanHosts.length ? (
                 <div className="table-wrap">
@@ -632,14 +984,14 @@ function App() {
                     <thead>
                       <tr>
                         <th>IP</th>
-                        <th>Role</th>
-                        <th>Hostname</th>
-                        <th>MAC</th>
-                        <th>Vendor</th>
-                        <th>Type</th>
-                        <th>Open ports</th>
-                        <th>Source</th>
-                        <th>Latency</th>
+                        <th>{t.role}</th>
+                        <th>{t.hostname}</th>
+                        <th>{t.mac}</th>
+                        <th>{t.vendor}</th>
+                        <th>{t.type}</th>
+                        <th>{t.openPorts}</th>
+                        <th>{t.source}</th>
+                        <th>{t.latency}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -647,11 +999,11 @@ function App() {
                         <tr key={host.ip}>
                           <td>{host.ip}</td>
                           <td>{host.network_role || "device"}</td>
-                          <td>{host.hostname || "Unknown"}</td>
-                          <td>{host.mac_address || "Unknown"}</td>
-                          <td>{host.vendor_guess || "Unknown"}</td>
+                          <td>{host.hostname || t.unknown}</td>
+                          <td>{host.mac_address || t.unknown}</td>
+                          <td>{host.vendor_guess || t.unknown}</td>
                           <td>{host.device_type || "unknown"}</td>
-                          <td>{host.open_ports.length ? host.open_ports.join(", ") : "None"}</td>
+                          <td>{host.open_ports.length ? host.open_ports.join(", ") : t.none}</td>
                           <td>{host.source || "unknown"}</td>
                           <td>{host.latency_display || `${host.latency_ms} ms`}</td>
                         </tr>
@@ -660,7 +1012,7 @@ function App() {
                   </table>
                 </div>
               ) : (
-                <Empty text="Run a scan to list active devices on your local network." />
+                <Empty text={t.noScanRows} />
               )}
             </article>
           </section>
@@ -669,51 +1021,46 @@ function App() {
         {activeSection === "traceroute" && (
           <section className="section">
             <article className="panel">
-              <h3>Traceroute</h3>
-              <p className="panel-subtitle">
-                Trace the route from this PC to a host or IP. Useful for finding routing, ISP or network path problems.
-              </p>
+              <h3>{t.traceroute}</h3>
+              <p className="panel-subtitle">{t.tracerouteHelp}</p>
 
               <div className="form-row">
                 <label>
-                  Host or IP
+                  {t.hostOrIp}
                   <input value={traceHost} onChange={(event) => setTraceHost(event.target.value)} />
                 </label>
                 <button className="btn btn-primary" onClick={runTraceroute} disabled={loadingTrace}>
-                  {loadingTrace ? "Tracing..." : "Run traceroute"}
+                  {loadingTrace ? t.tracing : t.runTraceroute}
                 </button>
               </div>
 
-              <div className="scan-note">
-                Traceroute is manual because it can take several seconds. V1 uses an optimized limit of 12 hops and 600 ms per hop.
-              </div>
+              <div className="scan-note">{t.traceNote}</div>
 
-              <pre className="terminal">{traceResult || "No traceroute result yet."}</pre>
+              <pre className="terminal">{traceResult || t.noTrace}</pre>
             </article>
           </section>
         )}
+
         {activeSection === "adapters" && (
           <section className="section">
             <article className="panel">
-              <h3>Active adapters</h3>
-              <p className="panel-subtitle">
-                Shows active network adapters with IP, gateway, DNS and MAC address.
-              </p>
+              <h3>{t.activeAdapters}</h3>
+              <p className="panel-subtitle">{t.activeAdaptersHelp}</p>
 
               {details?.adapters?.length ? (
                 <div className="adapter-list">
                   {details.adapters.map((adapter) => (
                     <div className="adapter" key={`${adapter.description}-${adapter.mac_address}`}>
                       <h4>{adapter.description}</h4>
-                      <Info label="MAC" value={adapter.mac_address || "Not available"} />
-                      <Info label="IPs" value={adapter.ip_addresses.join(", ") || "Not detected"} />
-                      <Info label="Gateway" value={adapter.gateways.join(", ") || "Not detected"} />
-                      <Info label="DNS" value={adapter.dns_servers.join(", ") || "Not detected"} />
+                      <Info label={t.mac} value={adapter.mac_address || t.unknown} />
+                      <Info label={t.ips} value={adapter.ip_addresses.join(", ") || "Not detected"} />
+                      <Info label={t.gateway} value={adapter.gateways.join(", ") || "Not detected"} />
+                      <Info label={t.dns} value={adapter.dns_servers.join(", ") || "Not detected"} />
                     </div>
                   ))}
                 </div>
               ) : (
-                <Empty text="No active adapters loaded yet. Click Refresh first." />
+                <Empty text={t.noAdapters} />
               )}
             </article>
           </section>
@@ -724,15 +1071,15 @@ function App() {
             <article className="panel">
               <div className="panel-header">
                 <div>
-                  <h3>Diagnostic report</h3>
-                  <p>Copy the current network summary and diagnostic result.</p>
+                  <h3>{t.diagnosticReport}</h3>
+                  <p>{t.diagnosticReportHelp}</p>
                 </div>
                 <div className="panel-actions">
                   <button className="btn btn-secondary" onClick={copyReport} disabled={!details && !diagnostic}>
-                    Copy report
+                    {t.copyReport}
                   </button>
                   <button className="btn btn-primary" onClick={exportTxtReport} disabled={!details && !diagnostic}>
-                    Export TXT
+                    {t.exportTxt}
                   </button>
                 </div>
               </div>
@@ -740,9 +1087,7 @@ function App() {
               {copyStatus && <p className="copy-status">{copyStatus}</p>}
               {exportStatus && <p className="copy-status">{exportStatus}</p>}
 
-              <pre className="terminal report">
-                {reportText || "Run diagnostic to generate a report."}
-              </pre>
+              <pre className="terminal report">{reportText || t.noReport}</pre>
             </article>
           </section>
         )}

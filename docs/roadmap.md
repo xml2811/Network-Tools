@@ -69,3 +69,8 @@ Advanced mode:
 - Export TXT reports.
 - Export Network Scan TXT reports.
 - Save location selector instead of automatic Desktop save.
+## V1 multilanguage UI
+
+- English UI.
+- Spanish UI with accents in UTF-8.
+- Portuguese UI.
