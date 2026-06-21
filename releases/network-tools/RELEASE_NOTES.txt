@@ -1,22 +1,30 @@
 # MPTech Network Tools v1.0.0
 
-Portable Windows toolkit for network diagnostics, local scan, ping, ports, traceroute and TXT reports.
+Portable Windows network diagnostics toolkit by MPTech Tools.
+
+## Fix included
+
+- Fixed Spanish and Portuguese text encoding.
+- UI text is stored correctly as UTF-8.
+- No mojibake in accented characters.
+
+## Included modules
+
+- Network summary
+- Diagnostic
+- Ping
+- TCP port test
+- Local listening ports
+- Network Scan
+- Traceroute
+- Report copy/export
+- English, Spanish and Portuguese UI
 
 ## Recommended download
 
 Download the portable version:
 
 **MPTech-Network-Tools-v1.0.0-portable.exe**
-
-The portable version does not require installation.
-
-If included, the installer version is optional:
-
-**MPTech-Network-Tools-v1.0.0-installer.exe**
-
-## Notes
-
-Windows SmartScreen may show a warning because the executable is not code-signed yet.
 
 ## SHA256
 
