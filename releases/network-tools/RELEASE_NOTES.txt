@@ -1,45 +1,23 @@
 # MPTech Network Tools v1.0.0
 
-First public release of MPTech Network Tools.
+Portable Windows toolkit for network diagnostics, local scan, ping, ports, traceroute and TXT reports.
 
 ## Recommended download
 
-Download:
+Download the portable version:
 
 **MPTech-Network-Tools-v1.0.0-portable.exe**
 
-This is the recommended portable version.
+The portable version does not require installation.
 
-The installer version is optional if included.
+If included, the installer version is optional:
 
-## Included
-
-- Dashboard with automatic network summary on startup.
-- Local IP, gateway, DNS and public IP detection.
-- Active adapter information.
-- Automatic diagnostic checks.
-- Ping tool.
-- TCP port test.
-- Local listening ports viewer.
-- Safe Network Scan V1.
-- Broadcast address detection.
-- MAC address detection when available.
-- Basic vendor guess.
-- Basic device type inference.
-- Common local port detection.
-- Traceroute.
-- Copy reports to clipboard.
-- Export reports to TXT with save dialog.
-- Network Scan report.
-- Multilanguage interface:
-  - English
-  - Spanish
-  - Portuguese.
+**MPTech-Network-Tools-v1.0.0-installer.exe**
 
 ## Notes
 
-Network Scan V1 is designed for safe local discovery.
-
-Deep scans, aggressive port scans and large network scans are planned for future versions, not V1.
-
 Windows SmartScreen may show a warning because the executable is not code-signed yet.
+
+## SHA256
+
+See checksums.txt.

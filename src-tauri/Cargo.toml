@@ -1,7 +1,7 @@
 [package]
 name = "network-tools"
-version = "0.1.0"
-description = "Portable Windows toolkit for basic network diagnostics."
+version = "1.0.0"
+description = "Portable Windows toolkit for network diagnostics, local scan, ping, ports, traceroute and TXT reports."
 authors = ["MPTech Tools"]
 edition = "2021"
 
