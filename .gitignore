@@ -13,3 +13,4 @@ src-tauri/target/
 Thumbs.db
 .vscode/
 .idea/
+_backups/
