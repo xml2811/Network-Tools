@@ -6,7 +6,19 @@ Portable Windows network diagnostics toolkit by MPTech Tools.
 
 - Fixed Spanish and Portuguese UTF-8 text encoding.
 - Removed broken mojibake characters from the UI.
-- Removed accidental _backups folder from the repository.
+- Cleaned accidental backup files from the repository.
+
+## Included modules
+
+- Network summary
+- Diagnostic
+- Ping
+- TCP port test
+- Local listening ports
+- Network Scan
+- Traceroute
+- Report copy/export
+- English, Spanish and Portuguese UI
 
 ## Recommended download
 
