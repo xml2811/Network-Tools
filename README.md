@@ -1,105 +1,125 @@
 # MPTech Network Tools
 
-Portable Windows toolkit for basic network diagnostics.
+Portable Windows toolkit for network diagnostics, local network inspection and quick troubleshooting.
 
-This project is part of the MPTech Tools collection: small, practical and portable Windows utilities for technicians, advanced users, developers and sysadmins.
+![Dashboard](docs/screenshots/network-tools-dashboard.png)
 
-## Current status
+## Download
 
-V1 development.
+Go to the latest release and download:
 
-## Current features
+**MPTech-Network-Tools-v1.0.0-portable.exe**
 
-- Network summary.
-- Automatic initial network summary when the app opens.
-- Active network adapters.
-- Local IP detection.
-- Gateway detection.
-- DNS detection.
-- Public IP check.
-- Ping checks.
-- TCP port testing.
-- Traceroute route path check.
-- Local listening ports.
-- Basic local Network Scan limited to private/local networks.
-- Automatic basic diagnosis.
-- Copy diagnostic report.
-- Export reports to TXT with save location selector.
-- Copy Network Scan report.
+The portable version is the recommended download. It does not require installation.
 
-## Diagnostic logic
+If available, the installer version is optional.
 
-The tool checks:
+## What it does
 
-- Gateway reachability.
-- Primary DNS reachability.
-- Internet IP reachability.
-- Domain resolution.
+MPTech Network Tools is a small Windows desktop tool focused on practical network diagnostics.
 
-Then it gives a human-readable diagnosis, for example:
+It is designed for technicians, sysadmins, developers, IT students and advanced Windows users who want quick network information without opening several separate tools.
 
-- Local network problem.
-- DNS problem.
-- Internet connectivity problem.
-- Network looks OK.
+## Features
 
-## Not included in early V1
+- Automatic network summary on startup.
+- Local IP, gateway, DNS and public IP detection.
+- Active network adapter information.
+- Automatic diagnostic checks.
+- Ping tool.
+- TCP port test.
+- Local listening ports viewer.
+- Safe Network Scan V1.
+- Broadcast address detection.
+- MAC address detection when available.
+- Basic vendor guess.
+- Basic device type inference.
+- Common local port detection.
+- Traceroute tool.
+- Copy report to clipboard.
+- Export report to TXT with save dialog.
+- Network Scan report.
+- Multilanguage interface:
+  - English
+  - Spanish
+  - Portuguese.
 
-Advanced system changes are planned for later because they can break connectivity or require administrator permissions:
+## Screenshots
 
-- Change static IP.
-- Change gateway.
-- Change DNS.
-- Release/renew DHCP.
-- Reset adapters.
-- Winsock reset.
+### Dashboard
 
-## Responsible use
+![Dashboard](docs/screenshots/network-tools-dashboard.png)
 
-Use this tool only on your own systems or networks where you have permission.
+### Diagnostic
 
-## Tech stack
-
-- Tauri
-- React
-- TypeScript
-- Rust
-- Windows command integration
-## Planned next module
+![Diagnostic](docs/screenshots/network-tools-diagnostic.png)
 
 ### Network Scan
 
-A safe basic LAN scan module is planned for V1/V1.1. It should be limited to private/local networks and used only on networks where the user has permission.
+![Network Scan](docs/screenshots/network-tools-network-scan.png)
+
+### Traceroute
+
+![Traceroute](docs/screenshots/network-tools-traceroute.png)
+
+### Ports
+
+![Ports](docs/screenshots/network-tools-ports.png)
+
+### Report
+
+![Report](docs/screenshots/network-tools-report.png)
+
+### Spanish interface
+
+![Spanish](docs/screenshots/network-tools-spanish.png)
+
+### Portuguese interface
+
+![Portuguese](docs/screenshots/network-tools-portuguese.png)
+
 ## Network Scan V1
 
-Network Scan uses a safe local discovery strategy:
+Network Scan is intentionally safe and limited for version 1.0.0.
 
-- ARP cache discovery.
-- Ping discovery on the current local /24 segment.
-- Hostname lookup when available.
+It checks the local network where the PC is connected and combines ARP entries, local ping discovery, broadcast detection and a small set of common service ports.
+
+It can show:
+
+- IP address.
+- Role.
+- Hostname when available.
 - MAC address when available.
-- Basic device type inference.
-- Common service port checks only on discovered local hosts.
+- Basic vendor guess.
+- Basic device type.
+- Common open ports.
+- Source.
+- Latency/source status.
 
-Deep scanning of very large /16 or /8 networks is planned for a future advanced mode.
-## Network Scan classification
+Deep scans, aggressive port scanning and large /16 or /8 progressive scans are intentionally not included in V1.
 
-Current V1 classification includes:
-
-- Broadcast address identification.
-- Gateway role detection.
-- Source detection: ARP, ping or calculated.
-- Basic vendor guess from common MAC prefixes.
-- Basic device type inference from hostname, vendor and common ports.
-- Common port checks on discovered local hosts only.
-## Traceroute V1
-
-Traceroute is executed manually and optimized for the app UI:
-
-- Async backend execution.
-- 12 hop limit.
-- 600 ms timeout per hop.
-- DNS lookup disabled for faster route checks.
 ## Languages
 
 The interface includes English, Spanish and Portuguese.
+
+## Privacy
+
+MPTech Network Tools does not require login, account, cloud service or backend server.
+
+Reports are generated locally.
+
+## Notes
+
+Windows SmartScreen may show a warning because the executable is not code-signed yet.
+
+## Tech stack
+
+- Tauri 2
+- React
+- TypeScript
+- Rust
+- PowerShell/Windows networking commands
+
+## License
+
+MIT License.

@@ -1,105 +1,127 @@
 # MPTech Network Tools
 
-Herramienta portable para Windows enfocada en diagnostico basico de red.
+Herramienta portable para Windows enfocada en diagnóstico de red, inspección de red local y solución rápida de problemas.
 
-Este proyecto forma parte de MPTech Tools: una coleccion de utilidades pequenas, practicas y portables para Windows, pensadas para tecnicos, usuarios avanzados, desarrolladores y administradores de sistemas.
+![Panel principal](docs/screenshots/network-tools-dashboard.png)
 
-## Estado actual
+## Descargar
 
-V1 en desarrollo.
+Ve a la última release y descarga:
 
-## Funciones actuales
+**MPTech-Network-Tools-v1.0.0-portable.exe**
 
-- Resumen de red.
-- Carga automatica inicial del resumen al abrir la app.
-- Adaptadores de red activos.
-- Deteccion de IP local.
-- Deteccion de gateway.
-- Deteccion de DNS.
-- Comprobacion de IP publica.
-- Comprobaciones de ping.
-- Test de puertos TCP.
-- Traceroute para comprobar la ruta hasta un host.
-- Puertos locales en escucha.
-- Network Scan local basico limitado a redes privadas/locales.
-- Diagnostico automatico basico.
-- Copiar informe de diagnostico.
-- Exportar informes a TXT eligiendo donde guardar.
-- Copiar informe de Network Scan.
+La versión portable es la descarga recomendada. No necesita instalación.
 
-## Logica de diagnostico
+Si está disponible, la versión installer es opcional.
 
-La herramienta comprueba:
+## Qué hace
 
-- Si responde el gateway.
-- Si responde el DNS principal.
-- Si responde una IP de internet.
-- Si resuelve un dominio.
+MPTech Network Tools es una pequeña herramienta de escritorio para Windows pensada para diagnóstico práctico de red.
 
-Despues genera un diagnostico entendible, por ejemplo:
+Está diseñada para técnicos, sysadmins, desarrolladores, estudiantes de IT y usuarios avanzados que quieren información rápida de red sin abrir varias herramientas distintas.
 
-- Problema de red local.
-- Problema de DNS.
-- Problema de conectividad a internet.
-- Red aparentemente correcta.
+## Funciones
 
-## No incluido en la V1 inicial
+- Resumen automático de red al abrir la app.
+- Detección de IP local, gateway, DNS e IP pública.
+- Información de adaptadores de red activos.
+- Diagnóstico automático.
+- Herramienta de ping.
+- Prueba de puertos TCP.
+- Visor de puertos locales en escucha.
+- Network Scan seguro V1.
+- Detección de dirección broadcast.
+- Detección de MAC cuando está disponible.
+- Estimación básica de fabricante.
+- Inferencia básica de tipo de dispositivo.
+- Detección de puertos comunes locales.
+- Traceroute.
+- Copiar informe al portapapeles.
+- Exportar informe a TXT eligiendo dónde guardar.
+- Informe propio de Network Scan.
+- Interfaz multidioma:
+  - Inglés
+  - Español
+  - Portugués.
 
-Los cambios avanzados del sistema se dejan para mas adelante porque pueden romper la conexion o requerir permisos de administrador:
+## Capturas
 
-- Cambiar IP estatica.
-- Cambiar gateway.
-- Cambiar DNS.
-- Liberar/renovar DHCP.
-- Resetear adaptadores.
-- Reset Winsock.
+### Panel principal
 
-## Uso responsable
+![Panel principal](docs/screenshots/network-tools-dashboard.png)
 
-Usa esta herramienta solo en tus propios sistemas o redes donde tengas permiso.
+### Diagnóstico
 
-## Tecnologias
-
-- Tauri
-- React
-- TypeScript
-- Rust
-- Integracion con comandos de Windows
-## Proximo modulo planificado
+![Diagnóstico](docs/screenshots/network-tools-diagnostic.png)
 
 ### Network Scan
 
-Modulo de escaneo LAN basico y seguro, limitado a redes privadas/locales y pensado solo para redes propias o donde el usuario tenga permiso.
+![Network Scan](docs/screenshots/network-tools-network-scan.png)
+
+### Traceroute
+
+![Traceroute](docs/screenshots/network-tools-traceroute.png)
+
+### Puertos
+
+![Puertos](docs/screenshots/network-tools-ports.png)
+
+### Informe
+
+![Informe](docs/screenshots/network-tools-report.png)
+
+### Interfaz en español
+
+![Español](docs/screenshots/network-tools-spanish.png)
+
+### Interfaz en portugués
+
+![Portugués](docs/screenshots/network-tools-portuguese.png)
+
 ## Network Scan V1
 
-Network Scan usa una estrategia local segura:
+Network Scan está limitado de forma intencionada en la versión 1.0.0 para que sea seguro y usable.
 
-- Descubrimiento por cache ARP.
-- Descubrimiento por ping en el segmento local /24 actual.
-- Busqueda de hostname cuando sea posible.
-- MAC cuando este disponible.
-- Inferencia basica del tipo de dispositivo.
-- Comprobacion de puertos comunes solo en hosts locales encontrados.
+Comprueba la red local donde está conectado el PC y combina entradas ARP, descubrimiento por ping local, detección de broadcast y un pequeño conjunto de puertos comunes.
 
-El escaneo profundo de redes /16 o /8 queda para un futuro modo avanzado.
-## Clasificacion de Network Scan
+Puede mostrar:
 
-La V1 incluye:
+- Dirección IP.
+- Rol.
+- Hostname cuando está disponible.
+- Dirección MAC cuando está disponible.
+- Estimación básica de fabricante.
+- Tipo básico de dispositivo.
+- Puertos comunes abiertos.
+- Origen.
+- Latencia/estado de origen.
 
-- Identificacion de broadcast.
-- Deteccion de gateway.
-- Origen del dato: ARP, ping o calculado.
-- Estimacion basica de fabricante por prefijo MAC.
-- Inferencia basica de tipo de dispositivo por hostname, fabricante y puertos comunes.
-- Comprobacion de puertos comunes solo en hosts locales descubiertos.
-## Traceroute V1
+Los escaneos profundos, escaneos agresivos de puertos y escaneos progresivos de redes grandes /16 o /8 quedan fuera de la V1.
 
-Traceroute se ejecuta manualmente y esta optimizado para no bloquear tanto la interfaz:
-
-- Ejecucion async en backend.
-- Limite de 12 saltos.
-- Timeout de 600 ms por salto.
-- Resolucion DNS desactivada para acelerar el trazado.
 ## Idiomas
 
-La interfaz incluye inglés, español y portugués, con textos guardados en UTF-8.
+La interfaz incluye inglés, español y portugués.
+
+Los textos están guardados en UTF-8 para mantener correctamente los acentos.
+
+## Privacidad
+
+MPTech Network Tools no necesita login, cuenta, servicio cloud ni backend.
+
+Los informes se generan localmente.
+
+## Notas
+
+Windows SmartScreen puede mostrar un aviso porque el ejecutable todavía no está firmado con certificado de código.
+
+## Stack técnico
+
+- Tauri 2
+- React
+- TypeScript
+- Rust
+- PowerShell/comandos de red de Windows
+
+## Licencia
+
+MIT License.
