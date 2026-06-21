@@ -1,127 +1,116 @@
 # MPTech Network Tools
 
-Herramienta portable para Windows enfocada en diagnÃƒÂ³stico de red, inspecciÃƒÂ³n de red local y soluciÃƒÂ³n rÃƒÂ¡pida de problemas.
+**MPTech Network Tools** es una herramienta portable para Windows orientada a técnicos, administradores de sistemas, desarrolladores y usuarios avanzados que necesitan diagnosticar problemas de red de forma rápida y cómoda.
 
-![Panel principal](docs/screenshots/network-tools-dashboard.png)
+Forma parte de la colección **MPTech Tools**, una familia de microherramientas de escritorio simples, técnicas y mantenibles para Windows.
 
-## Descargar
+---
 
-Ve a la ÃƒÂºltima release y descarga:
+## Características principales
 
-**MPTech-Network-Tools-v1.0.0-portable.exe**
-
-La versiÃƒÂ³n portable es la descarga recomendada. No necesita instalaciÃƒÂ³n.
-
-Si estÃƒÂ¡ disponible, la versiÃƒÂ³n installer es opcional.
-
-## QuÃƒÂ© hace
-
-MPTech Network Tools es una pequeÃƒÂ±a herramienta de escritorio para Windows pensada para diagnÃƒÂ³stico prÃƒÂ¡ctico de red.
-
-EstÃƒÂ¡ diseÃƒÂ±ada para tÃƒÂ©cnicos, sysadmins, desarrolladores, estudiantes de IT y usuarios avanzados que quieren informaciÃƒÂ³n rÃƒÂ¡pida de red sin abrir varias herramientas distintas.
-
-## Funciones
-
-- Resumen automÃƒÂ¡tico de red al abrir la app.
-- DetecciÃƒÂ³n de IP local, gateway, DNS e IP pÃƒÂºblica.
-- InformaciÃƒÂ³n de adaptadores de red activos.
-- DiagnÃƒÂ³stico automÃƒÂ¡tico.
-- Herramienta de ping.
-- Prueba de puertos TCP.
-- Visor de puertos locales en escucha.
-- Network Scan seguro V1.
-- DetecciÃƒÂ³n de direcciÃƒÂ³n broadcast.
-- DetecciÃƒÂ³n de MAC cuando estÃƒÂ¡ disponible.
-- EstimaciÃƒÂ³n bÃƒÂ¡sica de fabricante.
-- Inferencia bÃƒÂ¡sica de tipo de dispositivo.
-- DetecciÃƒÂ³n de puertos comunes locales.
+- Resumen rápido de red.
+- Información de adaptadores.
+- IP local y configuración básica.
+- Diagnóstico de conectividad.
+- Ping.
+- Comprobación de puertos.
 - Traceroute.
-- Copiar informe al portapapeles.
-- Exportar informe a TXT eligiendo dÃƒÂ³nde guardar.
-- Informe propio de Network Scan.
-- Interfaz multidioma:
-  - InglÃƒÂ©s
-  - EspaÃƒÂ±ol
-  - PortuguÃƒÂ©s.
+- Escaneo básico de red local.
+- Exportación de resultados a TXT.
+- Interfaz clara, profesional y portable.
+- Sin login.
+- Sin base de datos.
+- Sin backend.
+- Sin servicios externos obligatorios.
 
-## Capturas
+---
 
-### Panel principal
+## Objetivo
 
-![Panel principal](docs/screenshots/network-tools-dashboard.png)
+El objetivo de esta herramienta es ofrecer una utilidad sencilla para revisar el estado de red de un equipo Windows sin tener que abrir varias ventanas de comandos o recordar instrucciones manuales.
 
-### DiagnÃƒÂ³stico
+Está pensada para:
 
-![DiagnÃƒÂ³stico](docs/screenshots/network-tools-diagnostic.png)
+- Técnicos de soporte.
+- Administradores de sistemas.
+- Usuarios avanzados.
+- Desarrolladores.
+- Estudiantes de redes.
+- Profesionales IT.
 
-### Network Scan
+---
 
-![Network Scan](docs/screenshots/network-tools-network-scan.png)
+## Uso recomendado
 
-### Traceroute
+1. Ejecuta la aplicación.
+2. Revisa el resumen inicial de red.
+3. Usa las herramientas disponibles según el diagnóstico que necesites:
+   - Ping.
+   - Comprobación de puertos.
+   - Traceroute.
+   - Escaneo local.
+   - Exportación de resultados.
+4. Guarda o copia los resultados si necesitas documentar la incidencia.
 
-![Traceroute](docs/screenshots/network-tools-traceroute.png)
+---
 
-### Puertos
+## Seguridad
 
-![Puertos](docs/screenshots/network-tools-ports.png)
+La herramienta está diseñada para diagnóstico local y uso legítimo en redes propias o autorizadas.
 
-### Informe
+No está pensada para realizar escaneos ofensivos, intrusivos o no autorizados.
 
-![Informe](docs/screenshots/network-tools-report.png)
+El escaneo de red debe usarse únicamente en:
 
-### Interfaz en espaÃƒÂ±ol
+- Tu red doméstica.
+- Tu red profesional autorizada.
+- Laboratorios propios.
+- Entornos donde tengas permiso explícito.
 
-![EspaÃƒÂ±ol](docs/screenshots/network-tools-spanish.png)
+---
 
-### Interfaz en portuguÃƒÂ©s
+## Distribución
 
-![PortuguÃƒÂ©s](docs/screenshots/network-tools-portuguese.png)
+Los ejecutables finales deben descargarse desde la sección **GitHub Releases** del repositorio.
 
-## Network Scan V1
+No se recomienda distribuir el `.exe` suelto dentro de la raíz del repositorio.
 
-Network Scan estÃƒÂ¡ limitado de forma intencionada en la versiÃƒÂ³n 1.0.0 para que sea seguro y usable.
+---
 
-Comprueba la red local donde estÃƒÂ¡ conectado el PC y combina entradas ARP, descubrimiento por ping local, detecciÃƒÂ³n de broadcast y un pequeÃƒÂ±o conjunto de puertos comunes.
+## Stack técnico
 
-Puede mostrar:
+- Tauri 2.
+- React.
+- TypeScript.
+- Rust.
+- Vite.
+- PowerShell para scripts de automatización.
+- GitHub Releases para distribución.
 
-- DirecciÃƒÂ³n IP.
-- Rol.
-- Hostname cuando estÃƒÂ¡ disponible.
-- DirecciÃƒÂ³n MAC cuando estÃƒÂ¡ disponible.
-- EstimaciÃƒÂ³n bÃƒÂ¡sica de fabricante.
-- Tipo bÃƒÂ¡sico de dispositivo.
-- Puertos comunes abiertos.
-- Origen.
-- Latencia/estado de origen.
+---
 
-Los escaneos profundos, escaneos agresivos de puertos y escaneos progresivos de redes grandes /16 o /8 quedan fuera de la V1.
+## Estado del proyecto
 
-## Idiomas
+Versión inicial pública orientada a diagnóstico de red básico y portable.
 
-La interfaz incluye inglÃƒÂ©s, espaÃƒÂ±ol y portuguÃƒÂ©s.
+Futuras versiones pueden incluir mejoras visuales, más pruebas de conectividad, perfiles, historial local, exportaciones avanzadas y mayor control de escaneo seguro.
 
-Los textos estÃƒÂ¡n guardados en UTF-8 para mantener correctamente los acentos.
+---
 
-## Privacidad
+## Colección MPTech Tools
 
-MPTech Network Tools no necesita login, cuenta, servicio cloud ni backend.
+Esta herramienta forma parte de **MPTech Tools**, una colección de microherramientas de escritorio para Windows enfocadas en productividad técnica, soporte, redes, automatización y administración de sistemas.
 
-Los informes se generan localmente.
+Herramientas actuales de la colección:
 
-## Notas
+- Audio Device Switcher.
+- Link Downloader.
+- Network Tools.
 
-Windows SmartScreen puede mostrar un aviso porque el ejecutable todavÃƒÂ­a no estÃƒÂ¡ firmado con certificado de cÃƒÂ³digo.
-
-## Stack tÃƒÂ©cnico
-
-- Tauri 2
-- React
-- TypeScript
-- Rust
-- PowerShell/comandos de red de Windows
+---
 
 ## Licencia
 
-MIT License.
+Proyecto desarrollado como parte de la colección MPTech Tools.
+
+Revisa la licencia del repositorio antes de reutilizar, modificar o redistribuir el código.
