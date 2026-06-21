@@ -1,6 +1,3 @@
-<p align="center">
-  <img src="docs/branding/logo.png" alt="MPTech Network Tools logo" width="180">
-</p>
 # MPTech Network Tools
 
 Portable Windows toolkit for network diagnostics, local network inspection and quick troubleshooting.

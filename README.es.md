@@ -1,51 +1,48 @@
-<p align="center">
-  <img src="docs/branding/logo.png" alt="MPTech Network Tools logo" width="180">
-</p>
 # MPTech Network Tools
 
-Herramienta portable para Windows enfocada en diagnÃ³stico de red, inspecciÃ³n de red local y soluciÃ³n rÃ¡pida de problemas.
+Herramienta portable para Windows enfocada en diagnÃƒÂ³stico de red, inspecciÃƒÂ³n de red local y soluciÃƒÂ³n rÃƒÂ¡pida de problemas.
 
 ![Panel principal](docs/screenshots/network-tools-dashboard.png)
 
 ## Descargar
 
-Ve a la Ãºltima release y descarga:
+Ve a la ÃƒÂºltima release y descarga:
 
 **MPTech-Network-Tools-v1.0.0-portable.exe**
 
-La versiÃ³n portable es la descarga recomendada. No necesita instalaciÃ³n.
+La versiÃƒÂ³n portable es la descarga recomendada. No necesita instalaciÃƒÂ³n.
 
-Si estÃ¡ disponible, la versiÃ³n installer es opcional.
+Si estÃƒÂ¡ disponible, la versiÃƒÂ³n installer es opcional.
 
-## QuÃ© hace
+## QuÃƒÂ© hace
 
-MPTech Network Tools es una pequeÃ±a herramienta de escritorio para Windows pensada para diagnÃ³stico prÃ¡ctico de red.
+MPTech Network Tools es una pequeÃƒÂ±a herramienta de escritorio para Windows pensada para diagnÃƒÂ³stico prÃƒÂ¡ctico de red.
 
-EstÃ¡ diseÃ±ada para tÃ©cnicos, sysadmins, desarrolladores, estudiantes de IT y usuarios avanzados que quieren informaciÃ³n rÃ¡pida de red sin abrir varias herramientas distintas.
+EstÃƒÂ¡ diseÃƒÂ±ada para tÃƒÂ©cnicos, sysadmins, desarrolladores, estudiantes de IT y usuarios avanzados que quieren informaciÃƒÂ³n rÃƒÂ¡pida de red sin abrir varias herramientas distintas.
 
 ## Funciones
 
-- Resumen automÃ¡tico de red al abrir la app.
-- DetecciÃ³n de IP local, gateway, DNS e IP pÃºblica.
-- InformaciÃ³n de adaptadores de red activos.
-- DiagnÃ³stico automÃ¡tico.
+- Resumen automÃƒÂ¡tico de red al abrir la app.
+- DetecciÃƒÂ³n de IP local, gateway, DNS e IP pÃƒÂºblica.
+- InformaciÃƒÂ³n de adaptadores de red activos.
+- DiagnÃƒÂ³stico automÃƒÂ¡tico.
 - Herramienta de ping.
 - Prueba de puertos TCP.
 - Visor de puertos locales en escucha.
 - Network Scan seguro V1.
-- DetecciÃ³n de direcciÃ³n broadcast.
-- DetecciÃ³n de MAC cuando estÃ¡ disponible.
-- EstimaciÃ³n bÃ¡sica de fabricante.
-- Inferencia bÃ¡sica de tipo de dispositivo.
-- DetecciÃ³n de puertos comunes locales.
+- DetecciÃƒÂ³n de direcciÃƒÂ³n broadcast.
+- DetecciÃƒÂ³n de MAC cuando estÃƒÂ¡ disponible.
+- EstimaciÃƒÂ³n bÃƒÂ¡sica de fabricante.
+- Inferencia bÃƒÂ¡sica de tipo de dispositivo.
+- DetecciÃƒÂ³n de puertos comunes locales.
 - Traceroute.
 - Copiar informe al portapapeles.
-- Exportar informe a TXT eligiendo dÃ³nde guardar.
+- Exportar informe a TXT eligiendo dÃƒÂ³nde guardar.
 - Informe propio de Network Scan.
 - Interfaz multidioma:
-  - InglÃ©s
-  - EspaÃ±ol
-  - PortuguÃ©s.
+  - InglÃƒÂ©s
+  - EspaÃƒÂ±ol
+  - PortuguÃƒÂ©s.
 
 ## Capturas
 
@@ -53,9 +50,9 @@ EstÃ¡ diseÃ±ada para tÃ©cnicos, sysadmins, desarrolladores, estudiantes de
 
 ![Panel principal](docs/screenshots/network-tools-dashboard.png)
 
-### DiagnÃ³stico
+### DiagnÃƒÂ³stico
 
-![DiagnÃ³stico](docs/screenshots/network-tools-diagnostic.png)
+![DiagnÃƒÂ³stico](docs/screenshots/network-tools-diagnostic.png)
 
 ### Network Scan
 
@@ -73,28 +70,28 @@ EstÃ¡ diseÃ±ada para tÃ©cnicos, sysadmins, desarrolladores, estudiantes de
 
 ![Informe](docs/screenshots/network-tools-report.png)
 
-### Interfaz en espaÃ±ol
+### Interfaz en espaÃƒÂ±ol
 
-![EspaÃ±ol](docs/screenshots/network-tools-spanish.png)
+![EspaÃƒÂ±ol](docs/screenshots/network-tools-spanish.png)
 
-### Interfaz en portuguÃ©s
+### Interfaz en portuguÃƒÂ©s
 
-![PortuguÃ©s](docs/screenshots/network-tools-portuguese.png)
+![PortuguÃƒÂ©s](docs/screenshots/network-tools-portuguese.png)
 
 ## Network Scan V1
 
-Network Scan estÃ¡ limitado de forma intencionada en la versiÃ³n 1.0.0 para que sea seguro y usable.
+Network Scan estÃƒÂ¡ limitado de forma intencionada en la versiÃƒÂ³n 1.0.0 para que sea seguro y usable.
 
-Comprueba la red local donde estÃ¡ conectado el PC y combina entradas ARP, descubrimiento por ping local, detecciÃ³n de broadcast y un pequeÃ±o conjunto de puertos comunes.
+Comprueba la red local donde estÃƒÂ¡ conectado el PC y combina entradas ARP, descubrimiento por ping local, detecciÃƒÂ³n de broadcast y un pequeÃƒÂ±o conjunto de puertos comunes.
 
 Puede mostrar:
 
-- DirecciÃ³n IP.
+- DirecciÃƒÂ³n IP.
 - Rol.
-- Hostname cuando estÃ¡ disponible.
-- DirecciÃ³n MAC cuando estÃ¡ disponible.
-- EstimaciÃ³n bÃ¡sica de fabricante.
-- Tipo bÃ¡sico de dispositivo.
+- Hostname cuando estÃƒÂ¡ disponible.
+- DirecciÃƒÂ³n MAC cuando estÃƒÂ¡ disponible.
+- EstimaciÃƒÂ³n bÃƒÂ¡sica de fabricante.
+- Tipo bÃƒÂ¡sico de dispositivo.
 - Puertos comunes abiertos.
 - Origen.
 - Latencia/estado de origen.
@@ -103,9 +100,9 @@ Los escaneos profundos, escaneos agresivos de puertos y escaneos progresivos de 
 
 ## Idiomas
 
-La interfaz incluye inglÃ©s, espaÃ±ol y portuguÃ©s.
+La interfaz incluye inglÃƒÂ©s, espaÃƒÂ±ol y portuguÃƒÂ©s.
 
-Los textos estÃ¡n guardados en UTF-8 para mantener correctamente los acentos.
+Los textos estÃƒÂ¡n guardados en UTF-8 para mantener correctamente los acentos.
 
 ## Privacidad
 
@@ -115,9 +112,9 @@ Los informes se generan localmente.
 
 ## Notas
 
-Windows SmartScreen puede mostrar un aviso porque el ejecutable todavÃ­a no estÃ¡ firmado con certificado de cÃ³digo.
+Windows SmartScreen puede mostrar un aviso porque el ejecutable todavÃƒÂ­a no estÃƒÂ¡ firmado con certificado de cÃƒÂ³digo.
 
-## Stack tÃ©cnico
+## Stack tÃƒÂ©cnico
 
 - Tauri 2
 - React
