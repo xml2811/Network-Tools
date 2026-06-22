@@ -45,37 +45,12 @@ IT technicians, sysadmins, network learners, developers and advanced Windows use
 
 ## Screenshots
 
-### network tools dashboard
+Screenshots should be placed in:
 
-![network tools dashboard](docs/screenshots/network-tools-dashboard.png)
+- docs/screenshots/main.png
+- docs/screenshots/result.png
 
-### network tools diagnostic
-
-![network tools diagnostic](docs/screenshots/network-tools-diagnostic.png)
-
-### network tools network scan
-
-![network tools network scan](docs/screenshots/network-tools-network-scan.png)
-
-### network tools ports
-
-![network tools ports](docs/screenshots/network-tools-ports.png)
-
-### network tools portuguese
-
-![network tools portuguese](docs/screenshots/network-tools-portuguese.png)
-
-### network tools report
-
-![network tools report](docs/screenshots/network-tools-report.png)
-
-### network tools spanish
-
-![network tools spanish](docs/screenshots/network-tools-spanish.png)
-
-### network tools traceroute
-
-![network tools traceroute](docs/screenshots/network-tools-traceroute.png)
+---
 
 ## Download
 
@@ -149,4 +124,3 @@ Planned improvements may include:
 ## License
 
 Check the repository license before using, modifying or redistributing this software.
-
