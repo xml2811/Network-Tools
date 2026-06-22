@@ -15,3 +15,7 @@ Thumbs.db
 .idea/
 _backups/
 _backups/
+backup-readme-*/
+backup-readme-conflict-*/
+backup-readme-encoding-*/
+backup-readme-screenshots-*/

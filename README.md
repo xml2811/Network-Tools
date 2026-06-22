@@ -45,37 +45,37 @@ IT technicians, sysadmins, network learners, developers and advanced Windows use
 
 ## Screenshots
 
-### network tools dashboard
+### Dashboard
 
-![network tools dashboard](docs/screenshots/network-tools-dashboard.png)
+<img src="docs/screenshots/network-tools-dashboard.png" alt="Dashboard" width="900">
 
-### network tools diagnostic
+### Automatic Diagnostic
 
-![network tools diagnostic](docs/screenshots/network-tools-diagnostic.png)
+<img src="docs/screenshots/network-tools-diagnostic.png" alt="Automatic Diagnostic" width="900">
 
-### network tools network scan
+### Network Scan
 
-![network tools network scan](docs/screenshots/network-tools-network-scan.png)
+<img src="docs/screenshots/network-tools-network-scan.png" alt="Network Scan" width="900">
 
-### network tools ports
+### Port Test
 
-![network tools ports](docs/screenshots/network-tools-ports.png)
+<img src="docs/screenshots/network-tools-ports.png" alt="Port Test" width="900">
 
-### network tools portuguese
+### Main Portuguese
 
-![network tools portuguese](docs/screenshots/network-tools-portuguese.png)
+<img src="docs/screenshots/network-tools-portuguese.png" alt="Main Portuguese" width="900">
 
-### network tools report
+### Report
 
-![network tools report](docs/screenshots/network-tools-report.png)
+<img src="docs/screenshots/network-tools-report.png" alt="Report" width="900">
 
-### network tools spanish
+### Main Spanish
 
-![network tools spanish](docs/screenshots/network-tools-spanish.png)
+<img src="docs/screenshots/network-tools-spanish.png" alt="Main Spanish" width="900">
 
-### network tools traceroute
+### Traceroute
 
-![network tools traceroute](docs/screenshots/network-tools-traceroute.png)
+<img src="docs/screenshots/network-tools-traceroute.png" alt="Traceroute" width="900">
 
 ## Download
 
@@ -149,4 +149,5 @@ Planned improvements may include:
 ## License
 
 Check the repository license before using, modifying or redistributing this software.
+
 
