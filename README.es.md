@@ -111,6 +111,10 @@ Herramientas actuales de la colección:
 
 ## Licencia
 
-Proyecto desarrollado como parte de la colección MPTech Tools.
+Este proyecto tiene cÃ³digo visible para uso personal, educativo y no comercial.
 
-Revisa la licencia del repositorio antes de reutilizar, modificar o redistribuir el código.
+Puedes ver, estudiar, descargar y modificar el cÃ³digo para tu propio uso personal o interno no comercial.
+
+No puedes venderlo, revenderlo, sublicenciarlo, redistribuirlo comercialmente, incluirlo en productos/servicios de pago ni publicar versiones modificadas comerciales sin permiso previo por escrito.
+
+Consulta [LICENSE](LICENSE).

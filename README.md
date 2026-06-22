@@ -127,4 +127,14 @@ Planned improvements may include:
 
 ## License
 
+<<<<<<< HEAD
 Check the repository license before using, modifying or redistributing this software.
+=======
+This project is source-available for personal, educational and non-commercial use only.
+
+You may view, study, download and modify the code for your own personal or internal non-commercial use.
+
+You may not sell, resell, sublicense, commercially redistribute, include it in paid products/services, or publish modified commercial versions without prior written permission.
+
+See [LICENSE](LICENSE).
+>>>>>>> c695b9ce58b95f5dd7b25fd1d9f811945f34d347
