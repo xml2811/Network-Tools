@@ -1,125 +1,130 @@
-# MPTech Network Tools
+﻿# Network Tools
 
-Portable Windows toolkit for network diagnostics, local network inspection and quick troubleshooting.
+## Portable Windows network diagnostics utility for technicians and advanced users.
 
-![Dashboard](docs/screenshots/network-tools-dashboard.png)
+![Windows](https://img.shields.io/badge/Windows-Portable-blue)
+![Status](https://img.shields.io/badge/Status-Active-success)
+![Built With Tauri](https://img.shields.io/badge/Built%20With-Tauri-24C8DB)
+![MPTech](https://img.shields.io/badge/MPTech-Tools-black)
 
-## Download
+---
 
-Go to the latest release and download:
+## Overview
 
-**MPTech-Network-Tools-v1.0.0-portable.exe**
+Network Tools is part of MPTech Windows Tools, a collection of small utilities focused on practical technical use cases.
 
-The portable version is the recommended download. It does not require installation.
+Official website:
 
-If available, the installer version is optional.
+https://mptechsolutions.es
 
-## What it does
+---
 
-MPTech Network Tools is a small Windows desktop tool focused on practical network diagnostics.
+## Problem It Solves
 
-It is designed for technicians, sysadmins, developers, IT students and advanced Windows users who want quick network information without opening several separate tools.
+Network troubleshooting often requires multiple commands and tools. This project aims to group common checks in one simple interface.
+
+---
+
+## Who It Is For
+
+IT technicians, sysadmins, network learners, developers and advanced Windows users.
+
+---
 
 ## Features
 
-- Automatic network summary on startup.
-- Local IP, gateway, DNS and public IP detection.
-- Active network adapter information.
-- Automatic diagnostic checks.
-- Ping tool.
-- TCP port test.
-- Local listening ports viewer.
-- Safe Network Scan V1.
-- Broadcast address detection.
-- MAC address detection when available.
-- Basic vendor guess.
-- Basic device type inference.
-- Common local port detection.
-- Traceroute tool.
-- Copy report to clipboard.
-- Export report to TXT with save dialog.
-- Network Scan report.
-- Multilanguage interface:
-  - English
-  - Spanish
-  - Portuguese.
+- Network information
+- Ping
+- DNS lookup
+- Basic diagnostics
+- Planned LAN scan
+- Planned traceroute
+
+
+---
 
 ## Screenshots
 
-### Dashboard
+Screenshots will be added in:
 
-![Dashboard](docs/screenshots/network-tools-dashboard.png)
+docs/screenshots/
 
-### Diagnostic
+Recommended files:
 
-![Diagnostic](docs/screenshots/network-tools-diagnostic.png)
+- docs/screenshots/main.png
+- docs/screenshots/result.png
 
-### Network Scan
+---
 
-![Network Scan](docs/screenshots/network-tools-network-scan.png)
+## Download
 
-### Traceroute
+Latest release:
 
-![Traceroute](docs/screenshots/network-tools-traceroute.png)
+https://github.com/xml2811/Network-Tools/releases/latest
 
-### Ports
+Download only from official sources:
 
-![Ports](docs/screenshots/network-tools-ports.png)
+- https://github.com/xml2811/Network-Tools
+- https://mptechsolutions.es
 
-### Report
+---
 
-![Report](docs/screenshots/network-tools-report.png)
+## Installation
 
-### Spanish interface
+This tool is designed as a portable Windows executable.
 
-![Spanish](docs/screenshots/network-tools-spanish.png)
+General usage:
 
-### Portuguese interface
+1. Download the latest .exe from Releases.
+2. Place it in any folder.
+3. Run it.
 
-![Portuguese](docs/screenshots/network-tools-portuguese.png)
+No installer is required unless a future release adds one.
 
-## Network Scan V1
+---
 
-Network Scan is intentionally safe and limited for version 1.0.0.
+## Security Notice
 
-It checks the local network where the PC is connected and combines ARP entries, local ping discovery, broadcast detection and a small set of common service ports.
+Early releases may not be digitally signed yet.
 
-It can show:
+Because of that, Windows SmartScreen may show a warning.
 
-- IP address.
-- Role.
-- Hostname when available.
-- MAC address when available.
-- Basic vendor guess.
-- Basic device type.
-- Common open ports.
-- Source.
-- Latency/source status.
+This does not automatically mean the file is malicious, but you should only download the tool from official sources.
 
-Deep scans, aggressive port scanning and large /16 or /8 progressive scans are intentionally not included in V1.
+Future improvements may include:
 
-## Languages
+- SHA256 checksums
+- Digital code signing
+- Dedicated documentation
+- Dedicated download page on MPTechSolutions
 
-The interface includes English, Spanish and Portuguese.
+---
 
-## Privacy
+## Roadmap
 
-MPTech Network Tools does not require login, account, cloud service or backend server.
+Planned improvements may include:
 
-Reports are generated locally.
+- Better UI polish
+- More diagnostics
+- Better export options
+- Multilanguage support
+- Signed releases in the future
+- Documentation on MPTechSolutions.es
 
-## Notes
+---
 
-Windows SmartScreen may show a warning because the executable is not code-signed yet.
+## Related Links
 
-## Tech stack
+| Resource | Link |
+|---|---|
+| Official Website | https://mptechsolutions.es |
+| GitHub Profile | https://github.com/xml2811 |
+| Windows Tools Catalog | https://github.com/xml2811/Windows-Tools |
+| Repository | https://github.com/xml2811/Network-Tools |
+| Latest Release | https://github.com/xml2811/Network-Tools/releases/latest |
 
-- Tauri 2
-- React
-- TypeScript
-- Rust
-- PowerShell/Windows networking commands
+---
 
 ## License
 
-MIT License.
+Check the repository license before using, modifying or redistributing this software.
